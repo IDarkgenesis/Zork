@@ -15,7 +15,7 @@ Entity::Entity(string Name, string Description, EntityType Type, Entity* Partent
 
 void Entity::Tick()
 {
-
+	cout << Name + ": I am ticking" << endl;
 }
 
 void Entity::Look() const
@@ -48,4 +48,9 @@ void Entity::RemoveFromContainer(Entity* Child)
 	}
 
 	Container.erase(iterator);
+}
+
+string Entity::GetName() const
+{
+	return Name;
 }

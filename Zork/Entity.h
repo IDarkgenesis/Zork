@@ -27,6 +27,8 @@ public:
 
 	void RemoveFromContainer(Entity* Child);
 
+	string GetName() const;
+
 protected:
 	string Name;
 
