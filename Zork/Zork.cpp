@@ -2,11 +2,20 @@
 //
 
 #include <iostream>
+#include "Entity.h"
 
 using namespace std;
 
 int main()
 {
+    Entity* Room = new Entity("Bakcyard", "You are at a backyard, you can se a beatufeful forest and white fences", EntityType::ROOM);
+    Entity* Pep = new Entity("Pep", "This is pep, a human", EntityType::PLAYER, Room);
+    
+    Room->Look();
+    Pep->Look();
+
+    Room->AddToContainer(Pep);
+
     cout << "Hello World!\n";
 }
 
