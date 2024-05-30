@@ -17,9 +17,9 @@ public:
 
 	void Look() const override;
 
-	bool IsPlayerInRoom();
+	bool IsPlayerInRoom() const;
 
-	Player* GetPlayerInRoom();
+	Player* GetPlayerInRoom() const;
 
 	void PlayerEnters(Player* Player);
 	void PlayerLeaves();

@@ -13,12 +13,12 @@ void Room::Look() const
 	cout << Name + ": " << Description << endl;
 }
 
-bool Room::IsPlayerInRoom()
+bool Room::IsPlayerInRoom() const
 {
 	return CurrentPlayer != nullptr;
 }
 
-Player* Room::GetPlayerInRoom()
+Player* Room::GetPlayerInRoom() const
 {
 	return CurrentPlayer;
 }
