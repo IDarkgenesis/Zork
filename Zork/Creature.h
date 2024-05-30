@@ -9,10 +9,10 @@ class Creature : public Entity
 public:
 	Creature(string Name, string Description, Room* Location, int HitPoints, int BaseDamage);
 
-	virtual void Go(Room* Location);
+	virtual bool Go(Room* Location);
 
-	void Attack(Creature* Target);
-	void Attack();
+	bool Attack(Creature* Target);
+	bool Attack();
 
 	virtual void RecieveDamage(Creature* Enemy, int DamageRecieved);
 

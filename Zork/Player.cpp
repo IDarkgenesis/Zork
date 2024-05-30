@@ -8,31 +8,32 @@ Player::Player(string Name, string Description, Room* Location, int HitPoints, i
 	Go(Location);
 }
 
-void Player::Go(Room* NewLocation)
+bool Player::Go(Room* NewLocation)
 {
-	if (Location)
+	if (Location && NewLocation)
 	{
 		Location->PlayerLeaves();
-	}
-	if (NewLocation)
-	{
 		NewLocation->PlayerEnters(this);
-
 		Location = NewLocation;
+		return true;
 	}
+
+	return false;
 }
 
-void Player::Pick(Item* NewItem)
+bool Player::Pick(Item* NewItem)
 {
 	auto it = Inventory.find(NewItem->GetName());
 
 	if (it == Inventory.cend())
 	{
 		Inventory.insert(pair<string, Item*>(NewItem->GetName(), NewItem));
+		return true;
 	}
+	return false;
 }
 
-void Player::Drop(Item* OutItem)
+bool Player::Drop(Item* OutItem)
 {
 	auto it = Inventory.find(OutItem->GetName());
 
@@ -40,6 +41,8 @@ void Player::Drop(Item* OutItem)
 	{
 		Inventory.erase(it);
 	}
+
+	return false;
 }
 
 void Player::RecieveDamage(Creature* Enemy, int DamageRecieved)

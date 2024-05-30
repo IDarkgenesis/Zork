@@ -11,11 +11,11 @@ class Player : public Creature
 public:
 	Player(string Name, string Description, Room* Location, int HitPoints = 1, int BaseDamage = 1);
 
-	void Go(Room* NewLocation) override;
+	bool Go(Room* NewLocation) override;
 
-	void Pick(Item* Item);
+	bool Pick(Item* Item);
 
-	void Drop(Item* Item);
+	bool Drop(Item* Item);
 
 	void RecieveDamage(Creature* Enemy, int DamageRecieved) override;
 

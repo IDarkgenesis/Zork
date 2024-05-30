@@ -9,11 +9,17 @@ Npc::Npc(string Name, string Description, Room* Location, bool Hostile, int HitP
     this->Hostile = Hostile;
 }
 
-void Npc::Go(Room* NewLocation)
+bool Npc::Go(Room* NewLocation)
 {
-    NewLocation->AddNpc(this);
-    Location->RemoveNpc(this);
-    Location = NewLocation;
+    if (Location && NewLocation)
+    {
+        Location->RemoveNpc(this);
+        NewLocation->AddNpc(this);
+        Location = NewLocation;
+        return true;
+    }
+
+    return false;
 }
 
 bool Npc::IsHostile() const

@@ -15,21 +15,27 @@ void Creature::Go(Room* NewLocation)
 
 }
 
-void Creature::Attack(Creature* Target)
+bool Creature::Attack(Creature* Target)
 {
 	if (Target->IsAlive())
 	{
 		Target->RecieveDamage(this, BaseDamage);
 		CurrentTarget = Target;
+		return true;
 	}
+
+	return false;
 }
 
-void Creature::Attack()
+bool Creature::Attack()
 {
 	if (CurrentTarget->IsAlive())
 	{
 		CurrentTarget->RecieveDamage(this, BaseDamage);
+		return true;
 	}
+
+	return false;
 }
 
 void Creature::RecieveDamage(Creature* Enemy, int DamageRecieved)

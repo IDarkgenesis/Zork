@@ -19,7 +19,6 @@ public:
 
 	bool Unlock(const Item* UnlockKey);
 
-
 	bool IsContainerRoom(const Room* SelectedRoom) const;
 
 	Room* GetContainerRoom() const;
