@@ -1,5 +1,6 @@
 #include "World.h"
 #include "Entity.h"
+#include "Player.h"
 
 World::World()
 {
@@ -33,7 +34,6 @@ void World::SetGameOver(bool GameOver)
 {
 	bGameOver = GameOver;
 }
-
 
 bool World::ExecutePlayerCommand(const vector<string>& CommandTokens)
 {

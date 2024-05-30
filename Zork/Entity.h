@@ -21,7 +21,7 @@ public:
 
 	virtual void Tick();
 
-	void Look() const;
+	virtual void Look() const;
 
 	void AddToContainer(Entity* Child);
 

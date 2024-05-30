@@ -7,6 +7,7 @@
 using namespace std;
 
 class Entity;
+class Player;
 
 class World
 {
@@ -27,5 +28,7 @@ private:
 	bool ExecutePlayerCommand(const vector<string>& CommandTokens);
 
 	void AddToWorldEntities(Entity* NewEntity);
+
+	Player* Player;
 };
 
