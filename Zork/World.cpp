@@ -1,14 +1,15 @@
 #include "World.h"
 #include "Entity.h"
 #include "Player.h"
+#include "Room.h"
 
 World::World()
 {
-    Entity* Room = new Entity("Bakcyard", "You are at a backyard, you can se a beatufeful forest and white fences", EntityType::ROOM);
-    Entity* Pep = new Entity("Pep", "This is pep, a human", EntityType::PLAYER, Room);
+	Room* Courtyard = new Room("Courtyard", "You see beatueful white fences.");
 
-	AddToWorldEntities(Room);
-	AddToWorldEntities(Pep);
+	WorldEntities.insert(pair<string, Entity*>(Courtyard->GetName(), Courtyard));
+
+	this->CurrentPlayer = new Player("Player", "A player", Courtyard);
 }
 
 void World::Tick(const vector<string>& CommandTokens)

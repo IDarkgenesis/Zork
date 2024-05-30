@@ -29,6 +29,6 @@ private:
 
 	void AddToWorldEntities(Entity* NewEntity);
 
-	Player* Player;
+	Player* CurrentPlayer;
 };
 

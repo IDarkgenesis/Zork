@@ -1,8 +1,8 @@
 #include "Creature.h"
 #include "Room.h"
 
-Creature::Creature(string Name, string Description, EntityType Type, Room* Location, int HitPoints, int BaseDamage) :
-	Entity(Name, Description, Type, Location)
+Creature::Creature(string Name, string Description, Room* Location, int HitPoints, int BaseDamage) :
+	Entity(Name, Description)
 {	
 	this->Location = Location;
 	CurrentTarget = NULL;
@@ -12,9 +12,7 @@ Creature::Creature(string Name, string Description, EntityType Type, Room* Locat
 
 void Creature::Go(Room* NewLocation)
 {
-	Location->RemoveFromContainer(this);
-	NewLocation->AddToContainer(this);
-	Location = NewLocation;
+
 }
 
 void Creature::Attack(Creature* Target)

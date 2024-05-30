@@ -3,10 +3,17 @@
 #include "Room.h"
 
 Npc::Npc(string Name, string Description, Room* Location, bool Hostile, int HitPoints, int BaseDamage) : 
-    Creature(Name, Description, EntityType::NPC, Location, HitPoints, BaseDamage)
+    Creature(Name, Description, Location, HitPoints, BaseDamage)
 {
     CurrentTarget = NULL;
     this->Hostile = Hostile;
+}
+
+void Npc::Go(Room* NewLocation)
+{
+    NewLocation->AddNpc(this);
+    Location->RemoveNpc(this);
+    Location = NewLocation;
 }
 
 bool Npc::IsHostile() const
