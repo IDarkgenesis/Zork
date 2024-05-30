@@ -33,8 +33,12 @@ vector<string> Tokenize(const string& command, char separator)
 
 int main()
 {
+
+    cout << "Welcome to Zork!" << endl << endl;
+    
     // Create game world
     World NewWorld = World();
+    cout << endl;
 
     // Get player input
     string PlayerInput;
@@ -45,6 +49,7 @@ int main()
         vector<string> Tokens = Tokenize(PlayerInput, ' ');
 
         NewWorld.Tick(Tokens);
+        cout << endl;
     }
 
     cout << "Thanks for playing" << endl;

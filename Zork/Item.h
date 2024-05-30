@@ -15,6 +15,8 @@ class Item : public Entity
 public:
 	Item(string Name, string Description, ItemType Type);
 
+	void Look() const override;
+
 	ItemType GetItemType() const;
 
 	bool AddItemToContainer(Item* NewItem);

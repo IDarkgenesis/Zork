@@ -11,7 +11,9 @@ class Player : public Creature
 public:
 	Player(string Name, string Description, Room* Location, int HitPoints = 1, int BaseDamage = 1);
 
-	bool Go(Room* NewLocation) override;
+	void Look() const override;
+
+	bool Go(const string& Direction) override;
 
 	bool Pick(Item* Item);
 

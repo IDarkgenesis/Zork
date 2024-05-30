@@ -6,6 +6,20 @@ Item::Item(string Name, string Description, ItemType Type)
 	this->Type = Type;
 }
 
+void Item::Look() const
+{
+	Entity::Look();
+
+	if (Type == ItemType::Container)
+	{
+		cout << "This is a container, and contains:" << endl;
+		for (auto it : Container)
+		{
+			it.second->Look();
+		}
+	}
+}
+
 ItemType Item::GetItemType() const
 {
 	return Type;

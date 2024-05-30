@@ -8,13 +8,13 @@ Entity::Entity(string Name, string Description)
 
 void Entity::Tick()
 {
-	cout << Name + ": I am ticking" << endl;
+
 }
 
 void Entity::Look() const
 {
 
-	cout << Name << endl << Description << endl;
+	cout << Name + ": " << Description << endl;
 }
 
 string Entity::GetName() const

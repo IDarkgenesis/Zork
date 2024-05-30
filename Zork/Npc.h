@@ -7,7 +7,9 @@ class Npc : public Creature
 public:
 	Npc(string name, string Description, Room* Location, bool Hostile, int HitPoints = 1, int BaseDamage = 1);
 
-	bool Go(Room* Location) override;
+	void Look() const override;
+
+	bool Go(const string& Direction) override;
 
 	bool IsHostile() const;
 

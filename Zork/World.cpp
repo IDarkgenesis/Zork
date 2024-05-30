@@ -2,14 +2,21 @@
 #include "Entity.h"
 #include "Player.h"
 #include "Room.h"
+#include "Exit.h"
 
 World::World()
-{
-	Room* Courtyard = new Room("Courtyard", "You see beatueful white fences.");
+{ 
+	Room* Cell = new Room("Cell", "You have been in this disgusting cell for weeks.");
+	Room* Prison = new Room("Prison", "You have walked through this hallway everytime you are punished with force labor.");
+	Exit* CellPrisonExit = new Exit("east", "The cell door at your right looks like its open, thy must have forgot to close it.", "west", "Although its a bit dark you can still see your cell behind", Cell, Prison);
 
-	WorldEntities.insert(pair<string, Entity*>(Courtyard->GetName(), Courtyard));
 
-	this->CurrentPlayer = new Player("Player", "A player", Courtyard);
+	WorldEntities.insert(pair<string, Entity*>(Cell->GetName(), Cell));
+
+
+	CurrentPlayer = new Player("Player", "A player", Cell);
+	Cell->PlayerEnters(CurrentPlayer);
+
 }
 
 void World::Tick(const vector<string>& CommandTokens)
@@ -38,17 +45,31 @@ void World::SetGameOver(bool GameOver)
 
 bool World::ExecutePlayerCommand(const vector<string>& CommandTokens)
 {
-	// TESTING GAME OVER FUNCTION AND TICK IS WORKING
-	switch (CommandTokens.size())
+	if (CommandTokens.size() > 0)
 	{
-	case 1:
-		return true;
-	case 2:
-		bGameOver = true;
-		return true;
-	default:
-		return false;
+		GameCommand command = TokenToCommand(CommandTokens[0]);
+		switch (command)
+		{
+		case GameCommand::Look:
+			if (CommandTokens.size() > 1) CurrentPlayer->Look();
+			else CurrentPlayer->GetCurrentLocation()->Look();
+			return true;
+		case GameCommand::Go:
+			if (CommandTokens.size() > 1) return CurrentPlayer->Go(CommandTokens[1]);
+			else  return CurrentPlayer->Go(CommandTokens[0]);
+		case GameCommand::Unlock:
+			break;
+		case GameCommand::Attack:
+			break;
+		case GameCommand::Quit:
+			bGameOver = true;
+			return true;
+		default:
+			return false;
+		}
 	}
+
+	return false;
 }
 
 void World::AddToWorldEntities(Entity* NewEntity)
@@ -62,3 +83,26 @@ void World::AddToWorldEntities(Entity* NewEntity)
 
 	WorldEntities.insert(pair<string, Entity*>(NewEntity->GetName(), NewEntity));
 }
+
+bool World::CompareStrings(string IncommingString, string ExpectedString)
+{
+	// Convert Incomming string to lowerCase
+	for (auto& currentChar : IncommingString)
+	{
+		currentChar = tolower(currentChar);
+	}
+
+	return IncommingString == ExpectedString;
+}
+
+GameCommand World::TokenToCommand(string Token)
+{
+	if (CompareStrings(Token, "look")) return GameCommand::Look;
+	else if (CompareStrings(Token, "go") || CompareStrings(Token, "north") || CompareStrings(Token, "east") || CompareStrings(Token, "west") || CompareStrings(Token, "south")) return GameCommand::Go;
+	else if (CompareStrings(Token, "unlock")) return GameCommand::Unlock;
+	else if (CompareStrings(Token, "attack")) return GameCommand::Attack;
+	else if (CompareStrings(Token, "quit")) return GameCommand::Quit;
+
+	return GameCommand::NoCommand;
+}
+

@@ -1,6 +1,7 @@
 #include "Npc.h"
 #include "World.h"
 #include "Room.h"
+#include "Exit.h"
 
 Npc::Npc(string Name, string Description, Room* Location, bool Hostile, int HitPoints, int BaseDamage) : 
     Creature(Name, Description, Location, HitPoints, BaseDamage)
@@ -9,16 +10,39 @@ Npc::Npc(string Name, string Description, Room* Location, bool Hostile, int HitP
     this->Hostile = Hostile;
 }
 
-bool Npc::Go(Room* NewLocation)
+void Npc::Look() const
 {
-    if (Location && NewLocation)
-    {
-        Location->RemoveNpc(this);
-        NewLocation->AddNpc(this);
-        Location = NewLocation;
-        return true;
+    Entity::Look();
+    if (Hostile) {
+        cout << "This creature is looking at you fiercely" << endl;
     }
+}
 
+bool Npc::Go(const string& Direction)
+{
+    if (!IsAlive()) return false;
+
+    if (Location)
+    {
+        Exit* SelectedExit = Location->GetExit(Direction);
+        if (!SelectedExit)
+        {
+            return false;
+        }
+        if (!SelectedExit->IsExitLocked())
+        {
+            Room* NewLocation = SelectedExit->IsContainerRoom(Location) ? SelectedExit->GetLeadsToRoom() : SelectedExit->GetContainerRoom();
+            Location->RemoveNpc(this);
+            NewLocation->AddNpc(this);
+
+            if (Location->IsPlayerInRoom())
+            {
+                cout << Name + " is moving " + Direction << endl;
+            }
+
+            Location = NewLocation;
+        }
+    }
     return false;
 }
 

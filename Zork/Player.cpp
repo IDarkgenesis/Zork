@@ -1,23 +1,47 @@
 #include "Player.h"
 #include "Room.h"
 #include "Item.h"
+#include "Exit.h"
 
 Player::Player(string Name, string Description, Room* Location, int HitPoints, int BaseDamage) :
 	Creature(Name, Description, Location, HitPoints, BaseDamage)
 {
-	Go(Location);
+	
 }
 
-bool Player::Go(Room* NewLocation)
+void Player::Look() const
 {
-	if (Location && NewLocation)
+	Entity::Look();
+	for (auto it : Inventory)
 	{
-		Location->PlayerLeaves();
-		NewLocation->PlayerEnters(this);
-		Location = NewLocation;
-		return true;
+		it.second->Look();
 	}
+}
 
+bool Player::Go(const string& Direction)
+{
+	if (Location)
+	{
+		Exit* SelectedExit = Location->GetExit(Direction);
+		if (!SelectedExit)
+		{
+			cout << "There is nowhere to go in that direction" << endl;
+			return false;
+		}
+		if (!SelectedExit->IsExitLocked())
+		{
+			Room* NewLocation = SelectedExit->IsContainerRoom(Location) ? SelectedExit->GetLeadsToRoom() : SelectedExit->GetContainerRoom();
+			Location->PlayerLeaves();
+			NewLocation->PlayerEnters(this);
+			Location = NewLocation;
+
+			return true;
+		}
+		else
+		{
+			cout << "This exit is locked!" << endl;
+		}
+	}
 	return false;
 }
 

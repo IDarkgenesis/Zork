@@ -31,6 +31,7 @@ public:
 	bool RemoveNpc(Npc* OutNpc);
 
 	void AddExit(Exit* NewExit);
+	Exit* GetExit(const string& ExitName) const;
 
 private:
 	map<string, Exit*> Exits;

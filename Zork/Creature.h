@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity.h"
+#include<vector>
 
 class Room;
 
@@ -9,7 +10,7 @@ class Creature : public Entity
 public:
 	Creature(string Name, string Description, Room* Location, int HitPoints, int BaseDamage);
 
-	virtual bool Go(Room* Location);
+	virtual bool Go(const string& Direction);
 
 	bool Attack(Creature* Target);
 	bool Attack();

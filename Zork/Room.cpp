@@ -11,7 +11,36 @@ Room::Room(string Name, string Description) : Entity(Name, Description)
 
 void Room::Look() const
 {
-	cout << Name + ": " << Description << endl;
+	Entity::Look();
+
+	for (auto Exit : Exits)
+	{
+		if (Exit.second->IsContainerRoom(this))
+		{
+			Exit.second->Look();
+		}
+		else 
+		{
+			Exit.second->LookReverse();
+		}
+	}
+
+	if (Items.size() > 0) {
+		cout << "Looking carefully you see:" << endl;
+		for (auto item : Items)
+		{
+			item.second->Look();
+		}
+	}
+
+	if (Npcs.size() > 0)
+	{
+		cout << "You are not alone in this space !!!" << endl;
+		for (auto np : Npcs)
+		{
+			np.second->Look();
+		}
+	}
 }
 
 bool Room::IsPlayerInRoom() const
@@ -29,6 +58,7 @@ void Room::PlayerEnters(Player* NewPlayer)
 	if (NewPlayer)
 	{
 		CurrentPlayer = NewPlayer;
+		Look();
 	}
 }
 
@@ -78,7 +108,7 @@ bool Room::AddNpc(Npc* NewNpc)
 		Npcs.insert(pair<string, Npc*>(NewNpc->GetName(), NewNpc));
 		return true;
 	}
-	return false
+	return false;
 }
 
 bool Room::RemoveNpc(Npc* OutNpc)
@@ -100,7 +130,7 @@ void Room::AddExit(Exit* NewExit)
 {
 	if (NewExit)
 	{
-		string exitName = NewExit->IsContainerRoom(this) ? NewExit->GetName() : NewExit->GetLeadsToName();
+		string exitName = NewExit->IsContainerRoom(this) ? NewExit->GetName() : NewExit->GetReversePathName();
 		auto it = Exits.find(exitName);
 
 		if (it == Exits.cend())
@@ -108,5 +138,12 @@ void Room::AddExit(Exit* NewExit)
 			Exits.insert(pair<string, Exit*> (exitName, NewExit));
 		}
 	}
+}
+
+Exit* Room::GetExit(const string& ExitName) const
+{
+	auto it = Exits.find(ExitName);
+	if (it != Exits.cend()) return it->second;
+	return nullptr;
 }
 

@@ -9,6 +9,16 @@ using namespace std;
 class Entity;
 class Player;
 
+enum class GameCommand
+{
+	Look,
+	Go,
+	Unlock,
+	Attack,
+	Quit,
+	NoCommand
+};
+
 class World
 {
 public:
@@ -30,5 +40,9 @@ private:
 	void AddToWorldEntities(Entity* NewEntity);
 
 	Player* CurrentPlayer;
+
+	bool CompareStrings(string IncommingString, string ExpectedString);
+
+	GameCommand TokenToCommand(string Token);
 };
 

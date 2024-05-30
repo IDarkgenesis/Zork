@@ -5,43 +5,34 @@
 class Room;
 class Item;
 
-enum class Direction {
-	North,
-	East,
-	West,
-	South
-};
-
 class Exit : public Entity
 {
 public:
-	Exit(string Name, string ContainerDescription, string LeadsToName, string LeadsToDescription, Room* ContainerRoom, Room* LeadsToRoom, Item* RequiredKey = nullptr);
+	Exit(string Name, string ContainerDescription, string ReversePathName, string ReversePathDescription, Room* ContainerRoom, Room* LeadsToRoom, Item* RequiredKey = nullptr);
+
+	void Look() const override;
+	void LookReverse() const;
 
 	bool Unlock(const Item* UnlockKey);
 
 	bool IsContainerRoom(const Room* SelectedRoom) const;
 
+	bool IsExitLocked() const;
+
 	Room* GetContainerRoom() const;
 	Room* GetLeadsToRoom() const;
 	
-	string GetLeadsToName() const;
-	string GetLeadsToDescription() const;
-
-	Direction GetContainerDirection() const;
-	Direction GetLeadsToDirection() const;
+	string GetReversePathName() const;
 
 private:
 	Room* Container;
 	Room* LeadsTo;
 
-	string LeadsToName;
-	string LeadsToDescription;
+	string ReversePathName;
+	string ReversePathDescription;
 
 	Item* Key;
 
 	bool Locked;
-
-	Direction ContainerDirection;
-	Direction LeadsToDirection;
 };
 

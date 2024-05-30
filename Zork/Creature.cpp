@@ -10,7 +10,7 @@ Creature::Creature(string Name, string Description, Room* Location, int HitPoint
 	this->BaseDamage = BaseDamage;
 }
 
-bool Creature::Go(Room* NewLocation)
+bool Creature::Go(const string& Direction)
 {
 	return false;
 }

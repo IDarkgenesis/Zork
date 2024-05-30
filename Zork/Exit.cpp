@@ -1,11 +1,12 @@
 #include "Exit.h"
 #include "Item.h"
+#include "Room.h"
 
-Exit::Exit(string Name, string ContainerDescription, string LeadsToName, string LeadsToDescription, Room* ContainerRoom, Room* LeadsToRoom, Item* RequiredKey)
+Exit::Exit(string Name, string ContainerDescription, string ReversePathName, string ReversePathDescription, Room* ContainerRoom, Room* LeadsToRoom, Item* RequiredKey)
 	: Entity(Name, ContainerDescription)
 {
-	this->LeadsToName = LeadsToName;
-	this->LeadsToDescription = LeadsToDescription;
+	this->ReversePathName = ReversePathName;
+	this->ReversePathDescription = ReversePathDescription;
 
 	Container = ContainerRoom;
 	LeadsTo = LeadsToRoom;
@@ -15,6 +16,19 @@ Exit::Exit(string Name, string ContainerDescription, string LeadsToName, string 
 		Key = RequiredKey;
 		Locked = true;
 	}
+
+	Container->AddExit(this);
+	LeadsTo->AddExit(this);
+}
+
+void Exit::Look() const
+{
+	cout << Description << endl;
+}
+
+void Exit::LookReverse() const
+{
+	cout << ReversePathDescription << endl;
 }
 
 bool Exit::Unlock(const Item* UnlockKey)
@@ -38,6 +52,11 @@ bool Exit::IsContainerRoom(const Room* SelectedRoom) const
 	return false;
 }
 
+bool Exit::IsExitLocked() const
+{
+	return Locked;
+}
+
 Room* Exit::GetContainerRoom() const
 {
 	return Container;
@@ -48,22 +67,7 @@ Room* Exit::GetLeadsToRoom() const
 	return LeadsTo;
 }
 
-string Exit::GetLeadsToName() const
+string Exit::GetReversePathName() const
 {
-	return LeadsToName;
-}
-
-string Exit::GetLeadsToDescription() const
-{
-	return LeadsToDescription;
-}
-
-Direction Exit::GetContainerDirection() const
-{
-	return ContainerDirection;
-}
-
-Direction Exit::GetLeadsToDirection() const
-{
-	return LeadsToDirection;
+	return ReversePathName;
 }
