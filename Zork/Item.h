@@ -1,10 +1,29 @@
 #pragma once
 
 #include "Entity.h"
+#include<map>
+
+enum class ItemType
+{
+	Container,
+	Key,
+	Other
+};
 
 class Item : public Entity
 {
 public:
-	Item(string Name, string Description);
+	Item(string Name, string Description, ItemType Type);
+
+	ItemType GetItemType() const;
+
+	bool AddItemToContainer(Item* NewItem);
+	bool RemoveItemFromContainer(Item* OutItem);
+
+private:
+
+	ItemType Type;
+
+	map<string, Item*> Container;
 };
 

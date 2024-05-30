@@ -23,6 +23,8 @@ bool Player::Go(Room* NewLocation)
 
 bool Player::Pick(Item* NewItem)
 {
+	if (!NewItem) return false;
+
 	auto it = Inventory.find(NewItem->GetName());
 
 	if (it == Inventory.cend())
@@ -34,7 +36,9 @@ bool Player::Pick(Item* NewItem)
 }
 
 bool Player::Drop(Item* OutItem)
-{
+{	
+	if (!OutItem) return false;
+
 	auto it = Inventory.find(OutItem->GetName());
 
 	if (it != Inventory.cend())

@@ -11,7 +11,7 @@ Exit::Exit(string Name, string ContainerDescription, string LeadsToName, string 
 	LeadsTo = LeadsToRoom;
 
 	Locked = false;
-	if (RequiredKey) {
+	if (RequiredKey && RequiredKey->GetItemType() == ItemType::Key) {
 		Key = RequiredKey;
 		Locked = true;
 	}
@@ -19,7 +19,7 @@ Exit::Exit(string Name, string ContainerDescription, string LeadsToName, string 
 
 bool Exit::Unlock(const Item* UnlockKey)
 {
-	if (UnlockKey == Key)
+	if (UnlockKey && UnlockKey == Key)
 	{
 		Locked = false;
 		return true;
@@ -30,7 +30,7 @@ bool Exit::Unlock(const Item* UnlockKey)
 
 bool Exit::IsContainerRoom(const Room* SelectedRoom) const
 {
-	if (SelectedRoom == Container)
+	if (SelectedRoom && SelectedRoom == Container)
 	{
 		return true;
 	}
@@ -46,6 +46,11 @@ Room* Exit::GetContainerRoom() const
 Room* Exit::GetLeadsToRoom() const
 {
 	return LeadsTo;
+}
+
+string Exit::GetLeadsToName() const
+{
+	return LeadsToName;
 }
 
 string Exit::GetLeadsToDescription() const

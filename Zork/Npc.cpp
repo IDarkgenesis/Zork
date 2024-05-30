@@ -31,11 +31,11 @@ void Npc::Tick()
 {
     if (Hostile)
     {
-        if (CurrentTarget->GetCurrentLocation() == Location)
+        if (CurrentTarget && CurrentTarget->GetCurrentLocation() == Location)
         {
             Attack();
         }
-        else if (Location->IsPlayerInRoom())
+        else if (Location && Location->IsPlayerInRoom())
         {
             CurrentTarget = (Creature*)Location->GetPlayerInRoom();
             Attack();
@@ -45,7 +45,10 @@ void Npc::Tick()
 
 void Npc::RecieveDamage(Creature* Enemy, int DamageRecieved)
 {
-    CurrentTarget = Enemy;
-    Hostile = true;
-    HitPoints -= DamageRecieved;
+    if (Enemy)
+    {
+        CurrentTarget = Enemy;
+        Hostile = true;
+        HitPoints -= DamageRecieved;
+    }
 }

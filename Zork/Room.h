@@ -24,11 +24,13 @@ public:
 	void PlayerEnters(Player* Player);
 	void PlayerLeaves();
 
-	void AddItem(Item* NewItem);
-	void RemoveItem(Item* OutItem);
+	bool AddItem(Item* NewItem);
+	bool RemoveItem(Item* OutItem);
 
-	void AddNpc(Npc* NewNpc);
-	void RemoveNpc(Npc* OutNpc);
+	bool AddNpc(Npc* NewNpc);
+	bool RemoveNpc(Npc* OutNpc);
+
+	void AddExit(Exit* NewExit);
 
 private:
 	map<string, Exit*> Exits;

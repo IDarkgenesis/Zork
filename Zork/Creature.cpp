@@ -10,14 +10,14 @@ Creature::Creature(string Name, string Description, Room* Location, int HitPoint
 	this->BaseDamage = BaseDamage;
 }
 
-void Creature::Go(Room* NewLocation)
+bool Creature::Go(Room* NewLocation)
 {
-
+	return false;
 }
 
 bool Creature::Attack(Creature* Target)
 {
-	if (Target->IsAlive())
+	if (Target && Target->IsAlive())
 	{
 		Target->RecieveDamage(this, BaseDamage);
 		CurrentTarget = Target;
@@ -29,7 +29,7 @@ bool Creature::Attack(Creature* Target)
 
 bool Creature::Attack()
 {
-	if (CurrentTarget->IsAlive())
+	if (CurrentTarget && CurrentTarget->IsAlive())
 	{
 		CurrentTarget->RecieveDamage(this, BaseDamage);
 		return true;

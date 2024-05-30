@@ -24,6 +24,7 @@ public:
 	Room* GetContainerRoom() const;
 	Room* GetLeadsToRoom() const;
 	
+	string GetLeadsToName() const;
 	string GetLeadsToDescription() const;
 
 	Direction GetContainerDirection() const;
