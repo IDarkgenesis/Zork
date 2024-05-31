@@ -12,6 +12,8 @@ Player::Player(string Name, string Description, Room* Location, int HitPoints, i
 void Player::Look() const
 {
 	Entity::Look();
+
+	cout << "You have the following items in your inventory:" << endl;
 	for (auto it : Inventory)
 	{
 		it.second->Look();
@@ -62,7 +64,7 @@ bool Player::Pick(const string& ItemName)
 	{
 		Inventory.insert(pair<string, Item*>(FoundItem->GetName(), FoundItem));
 		Location->RemoveItem(FoundItem);
-		cout << FoundItem->GetName() + "has been taken from the current room" << endl;
+		cout << FoundItem->GetName() + " has been taken from the current room" << endl;
 		return true;
 	}
 
@@ -85,6 +87,31 @@ bool Player::Pick(const string& ItemName)
 
 bool Player::Drop(const string& ItemName)
 {	
+	// Check if the item we want to drop is at our inventory
+	auto it = Inventory.find(ItemName);
+
+	if (it != Inventory.cend())
+	{
+		Location->AddItem(it->second);
+		Inventory.erase(it);
+		cout << "You dropped " + ItemName + " on the floor." << endl;
+		return true;
+	}
+
+	// Check if the item we want to drop is in a container
+	Item* FoundItem = nullptr;
+	for (auto CurrentItem : Inventory)
+	{
+		FoundItem = CurrentItem.second->GetItemFromContainer(ItemName);
+		if (FoundItem)
+		{
+			Location->AddItem(FoundItem);
+			CurrentItem.second->RemoveItemFromContainer(FoundItem);
+			cout << "You dropped " + ItemName + " on the floor." << endl;
+			return true;
+		}
+	}
+	cout << "Could not find " + ItemName + " in inventory to drop." << endl;
 	return false;
 }
 

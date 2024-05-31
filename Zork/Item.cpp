@@ -10,7 +10,7 @@ void Item::Look() const
 {
 	Entity::Look();
 
-	if (Type == ItemType::Container)
+	if (Type == ItemType::Container && Container.size() > 0)
 	{
 		cout << "This is a container, and contains:" << endl;
 		for (auto it : Container)
@@ -28,7 +28,7 @@ ItemType Item::GetItemType() const
 bool Item::AddItemToContainer(Item* NewItem)
 {
 	// Check if new item to store is not itself and current type is a container
-	if (NewItem && NewItem != this && Type == ItemType::Container)
+	if (NewItem && NewItem != this && !NewItem->GetItemFromContainer(Name) && Type == ItemType::Container)
 	{
 		auto it = Container.find(NewItem->GetName());
 

@@ -16,6 +16,12 @@ World::World()
 	Item* PrisonCourtKey = new Item("PrisonCourtKey", "This key opens the wooden door that connects the Prison with the Courtyard", ItemType::Key);
 	Prison->AddItem(PrisonCourtKey);
 
+	Item* Bag = new Item("Bag", "Is a small bag, lucky you!", ItemType::Container);
+	Cell->AddItem(Bag);
+
+	Item* Toolbox = new Item("Toolbox", "A toolbox, you can store things to it!", ItemType::Container);
+	Prison->AddItem(Toolbox);
+
 	Exit* PrisonCourtyardExit = new Exit("south","You can see the big wooden door that goes to the Courtyard at you south.", "north", "The big wooden door to the Prison is at your back", Prison, Courtyard, PrisonCourtKey);
 
 	WorldEntities.insert(pair<string, Entity*>(Cell->GetName(), Cell));
@@ -60,14 +66,20 @@ bool World::ExecutePlayerCommand(const vector<string>& CommandTokens)
 		case GameCommand::Go:
 			if (CommandTokens.size() > 1) return CurrentPlayer->Go(CommandTokens[1]);
 			else  return CurrentPlayer->Go(CommandTokens[0]);
+			break;
 		case GameCommand::Unlock:
 			break;
 		case GameCommand::Attack:
 			break;
 		case GameCommand::Pick:
 			if(CommandTokens.size() == 2) return CurrentPlayer->Pick(CommandTokens[1]);
-		case GameCommand::Drop:
 			break;
+		case GameCommand::Drop:
+			if (CommandTokens.size() == 2) return CurrentPlayer->Drop(CommandTokens[1]);
+			break;
+		case GameCommand::Inventory:
+			CurrentPlayer->Look();
+			return true;
 		case GameCommand::Quit:
 			bGameOver = true;
 			return true;
@@ -76,7 +88,7 @@ bool World::ExecutePlayerCommand(const vector<string>& CommandTokens)
 			return false;
 		}
 	}
-
+	cout << "Command is not valid." << endl;
 	return false;
 }
 
@@ -110,6 +122,8 @@ GameCommand World::TokenToCommand(string Token)
 	else if (CompareStrings(Token, "unlock")) return GameCommand::Unlock;
 	else if (CompareStrings(Token, "attack")) return GameCommand::Attack;
 	else if (CompareStrings(Token, "pick")) return GameCommand::Pick;
+	else if (CompareStrings(Token, "drop")) return GameCommand::Drop;
+	else if (CompareStrings(Token, "inventory")) return GameCommand::Inventory;
 	else if (CompareStrings(Token, "quit") || CompareStrings(Token, "exit")) return GameCommand::Quit;
 
 	return GameCommand::NoCommand;
