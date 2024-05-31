@@ -45,31 +45,46 @@ bool Player::Go(const string& Direction)
 	return false;
 }
 
-bool Player::Pick(Item* NewItem)
+bool Player::Pick(const string& ItemName)
 {
-	if (!NewItem) return false;
-
-	auto it = Inventory.find(NewItem->GetName());
-
-	if (it == Inventory.cend())
-	{
-		Inventory.insert(pair<string, Item*>(NewItem->GetName(), NewItem));
-		return true;
-	}
-	return false;
-}
-
-bool Player::Drop(Item* OutItem)
-{	
-	if (!OutItem) return false;
-
-	auto it = Inventory.find(OutItem->GetName());
+	// Check if the item we want to pick is already in our inventory
+	auto it = Inventory.find(ItemName);
 
 	if (it != Inventory.cend())
 	{
-		Inventory.erase(it);
+		cout << ItemName + "Is already in you inventory !" << endl;
+		return false;
 	}
 
+	// Check if item is in current room
+	Item* FoundItem = Location->GetItem(ItemName);
+	if (FoundItem)
+	{
+		Inventory.insert(pair<string, Item*>(FoundItem->GetName(), FoundItem));
+		Location->RemoveItem(FoundItem);
+		cout << FoundItem->GetName() + "has been taken from the current room" << endl;
+		return true;
+	}
+
+	// Check if item is in a container in inventory
+	for (auto CurrentItem : Inventory)
+	{
+		FoundItem = CurrentItem.second->GetItemFromContainer(ItemName);
+		if (FoundItem) 
+		{
+			Inventory.insert(pair<string, Item*>(FoundItem->GetName(), FoundItem));
+			CurrentItem.second->RemoveItemFromContainer(FoundItem);
+			cout << "and put in your inventory" << endl;
+			return true;
+		}
+	}
+
+	cout << "Looks like " + ItemName + " is nowhere to be found here." << endl;
+	return false;
+}
+
+bool Player::Drop(const string& ItemName)
+{	
 	return false;
 }
 

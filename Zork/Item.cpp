@@ -27,7 +27,8 @@ ItemType Item::GetItemType() const
 
 bool Item::AddItemToContainer(Item* NewItem)
 {
-	if (NewItem && Type == ItemType::Container)
+	// Check if new item to store is not itself and current type is a container
+	if (NewItem && NewItem != this && Type == ItemType::Container)
 	{
 		auto it = Container.find(NewItem->GetName());
 
@@ -44,13 +45,48 @@ bool Item::RemoveItemFromContainer(Item* OutItem)
 {
 	if (OutItem && Type == ItemType::Container)
 	{
+		// Look if the item is in current container
 		auto it = Container.find(OutItem->GetName());
 
 		if (it != Container.cend())
 		{
 			Container.erase(it);
+			cout << OutItem->GetName() + "has been removed from " + Name;
 			return true;
+		}
+
+		// Check if this item is inside another Container of inventory
+		for (auto CurrentItem : Container)
+		{
+			if (CurrentItem.second->RemoveItemFromContainer(OutItem))
+			{
+				cout << OutItem->GetName() + "has been removed from " + CurrentItem.second->GetName();
+				return true;
+			}
 		}
 	}
 	return false;
+}
+
+Item* Item::GetItemFromContainer(const string& ItemName) const
+{
+	if(Type == ItemType::Container)
+	{
+		auto it = Container.find(ItemName);
+		if (it != Container.cend())
+		{
+			return it->second;
+		}
+		// If not in current container check other containers
+
+		for (auto CurrentItem : Container)
+		{
+			Item* ItemFound = CurrentItem.second->GetItemFromContainer(ItemName);
+			if (ItemFound)
+			{
+				return ItemFound;
+			}
+		}
+	}
+	return nullptr;
 }

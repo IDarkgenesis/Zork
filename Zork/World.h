@@ -15,6 +15,8 @@ enum class GameCommand
 	Go,
 	Unlock,
 	Attack,
+	Pick,
+	Drop,
 	Quit,
 	NoCommand
 };

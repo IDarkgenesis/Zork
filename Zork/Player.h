@@ -15,9 +15,9 @@ public:
 
 	bool Go(const string& Direction) override;
 
-	bool Pick(Item* Item);
+	bool Pick(const string& ItemName);
 
-	bool Drop(Item* Item);
+	bool Drop(const string& ItemName);
 
 	void RecieveDamage(Creature* Enemy, int DamageRecieved) override;
 

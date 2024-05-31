@@ -26,6 +26,7 @@ public:
 
 	bool AddItem(Item* NewItem);
 	bool RemoveItem(Item* OutItem);
+	Item* GetItem(const string& ItemName) const;
 
 	bool AddNpc(Npc* NewNpc);
 	bool RemoveNpc(Npc* OutNpc);

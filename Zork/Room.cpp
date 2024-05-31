@@ -97,6 +97,16 @@ bool Room::RemoveItem(Item* OutItem)
 	return false;
 }
 
+Item* Room::GetItem(const string& ItemName) const
+{
+	auto it = Items.find(ItemName);
+	if (it != Items.cend())
+	{
+		return it->second;
+	}
+	return nullptr;
+}
+
 bool Room::AddNpc(Npc* NewNpc)
 {
 	if (!NewNpc) return false;

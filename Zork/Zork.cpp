@@ -46,6 +46,7 @@ int main()
     // Loop while not Game over or player input
     while (!NewWorld.IsGameOver() && getline(cin, PlayerInput))
     {
+        cout << endl;
         vector<string> Tokens = Tokenize(PlayerInput, ' ');
 
         NewWorld.Tick(Tokens);
