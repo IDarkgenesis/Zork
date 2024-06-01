@@ -2,19 +2,34 @@
 #include "World.h"
 #include "Room.h"
 #include "Exit.h"
+#include "Player.h"
+#include<string>
 
 Npc::Npc(string Name, string Description, Room* Location, bool Hostile, int HitPoints, int BaseDamage) : 
     Creature(Name, Description, Location, HitPoints, BaseDamage)
 {
-    CurrentTarget = NULL;
+    CurrentTarget = nullptr;
     this->Hostile = Hostile;
+    if(Location)
+    {
+        Location->AddNpc(this);
+    }
 }
 
 void Npc::Look() const
 {
-    Entity::Look();
-    if (Hostile) {
-        cout << "This creature is looking at you fiercely" << endl;
+
+    if (IsAlive())
+    {
+        Entity::Look();
+        if (Hostile) 
+        {
+            cout << Name + " is looking at you fiercely" << endl;
+        }
+    }
+    else
+    {
+        cout << "A " + Name + " corpse lies on the ground" << endl;
     }
 }
 
@@ -53,15 +68,15 @@ bool Npc::IsHostile() const
 
 void Npc::Tick()
 {
-    if (Hostile)
+    if (IsAlive() && Location)
     {
-        if (CurrentTarget && CurrentTarget->GetCurrentLocation() == Location)
+        if (CurrentTarget && CurrentTarget->GetCurrentLocation() == Location && CurrentTarget->IsAlive())
         {
             Attack();
         }
-        else if (Location && Location->IsPlayerInRoom())
+        else if (Hostile && !CurrentTarget && Location->IsPlayerInRoom())
         {
-            CurrentTarget = (Creature*)Location->GetPlayerInRoom();
+            CurrentTarget = Location->GetPlayerInRoom();
             Attack();
         }
     }
@@ -74,5 +89,14 @@ void Npc::RecieveDamage(Creature* Enemy, int DamageRecieved)
         CurrentTarget = Enemy;
         Hostile = true;
         HitPoints -= DamageRecieved;
+
+        if (IsAlive())
+        {
+            cout << Name + " has " + to_string(HitPoints) + " hitpoints" << endl;
+        }
+        else
+        {
+            cout << Name << " died" << endl;
+        }
     }
 }

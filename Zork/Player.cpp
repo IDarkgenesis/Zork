@@ -2,6 +2,7 @@
 #include "Room.h"
 #include "Item.h"
 #include "Exit.h"
+#include <string>
 
 Player::Player(string Name, string Description, Room* Location, int HitPoints, int BaseDamage) :
 	Creature(Name, Description, Location, HitPoints, BaseDamage)
@@ -138,6 +139,11 @@ bool Player::Put(const string& ItemName, const string& Container)
 void Player::RecieveDamage(Creature* Enemy, int DamageRecieved)
 {
 	HitPoints -= DamageRecieved;
+
+	if (IsAlive())
+	{
+		cout << "You have " + to_string(HitPoints) + " hitpoints" << endl;
+	}
 }
 
 bool Player::UnlockDoor(const string& Direction, const string& Key)

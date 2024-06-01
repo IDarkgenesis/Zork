@@ -4,6 +4,7 @@
 #include "Room.h"
 #include "Exit.h"
 #include "Item.h"
+#include "Npc.h"
 
 World::World()
 { 
@@ -12,6 +13,7 @@ World::World()
 	Exit* CellPrisonExit = new Exit("east", "The cell door at your right looks like its open, thy must have forgot to close it.", "west", "Although its a bit dark you can still see your cell behind.", Cell, Prison);
 
 	Room* Courtyard = new Room("Courtyard", "Finally some fresh air, its a bit cold out here");
+	Npc* Goblin = new Npc("Goblin", "A green and vile creature", Cell, true, 10, 1);
 
 	Item* PrisonCourtKey = new Item("PrisonCourtKey", "This key opens the wooden door that connects the Prison with the Courtyard", ItemType::Key);
 	Prison->AddItem(PrisonCourtKey);
@@ -32,8 +34,9 @@ World::World()
 	WorldEntities.insert(pair<string, Entity*>(Bag->GetName(), Bag));
 	WorldEntities.insert(pair<string, Entity*>(Toolbox->GetName(), Toolbox));
 	WorldEntities.insert(pair<string, Entity*>(PrisonCourtyardExit->GetName(), PrisonCourtyardExit));
+	WorldEntities.insert(pair<string, Entity*>(Goblin->GetName(), Goblin));
 
-	CurrentPlayer = new Player("Player", "A player", Cell);
+	CurrentPlayer = new Player("Player", "A player", Cell, 100, 2);
 	Cell->PlayerEnters(CurrentPlayer);
 
 }
@@ -45,6 +48,11 @@ void World::Tick(const vector<string>& CommandTokens)
 		for (auto entity : WorldEntities)
 		{
 			entity.second->Tick();
+		}
+
+		if (!CurrentPlayer->IsAlive())
+		{
+			bGameOver = true;
 		}
 	}
 }
@@ -75,6 +83,8 @@ bool World::ExecutePlayerCommand(const vector<string>& CommandTokens)
 			else  return CurrentPlayer->Go(CommandTokens[0]);
 			break;
 		case GameCommand::Attack:
+			if (CommandTokens.size() == 1) return CurrentPlayer->Attack();
+			else if (CommandTokens.size() == 2) return CurrentPlayer->Attack(CommandTokens[1]);
 			break;
 		case GameCommand::Pick:
 			if(CommandTokens.size() == 2) return CurrentPlayer->Pick(CommandTokens[1]);

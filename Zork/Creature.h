@@ -12,12 +12,13 @@ public:
 
 	virtual bool Go(const string& Direction);
 
-	bool Attack(Creature* Target);
+	bool Attack(const string& Target);
 	bool Attack();
 
 	virtual void RecieveDamage(Creature* Enemy, int DamageRecieved);
 
 	bool IsAlive() const;
+	bool HasTarget() const;
 
 	Room* GetCurrentLocation() const;
 

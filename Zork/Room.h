@@ -9,6 +9,7 @@ class Exit;
 class Item;
 class Npc;
 class Player;
+class Creature;
 
 class Room : public Entity
 {
@@ -30,6 +31,7 @@ public:
 
 	bool AddNpc(Npc* NewNpc);
 	bool RemoveNpc(Npc* OutNpc);
+	Creature* GetCreature(const string& NpcName) const;
 
 	void AddExit(Exit* NewExit);
 	Exit* GetExit(const string& ExitName) const;

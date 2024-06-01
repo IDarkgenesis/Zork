@@ -13,6 +13,7 @@ void Room::Look() const
 {
 	Entity::Look();
 
+	cout << endl;
 	for (auto Exit : Exits)
 	{
 		if (Exit.second->IsContainerRoom(this))
@@ -26,7 +27,7 @@ void Room::Look() const
 	}
 
 	if (Items.size() > 0) {
-		cout << "Looking carefully you see:" << endl;
+		cout << endl << "Looking carefully you see:" << endl;
 		for (auto item : Items)
 		{
 			item.second->Look();
@@ -35,7 +36,7 @@ void Room::Look() const
 
 	if (Npcs.size() > 0)
 	{
-		cout << "You are not alone in this space !!!" << endl;
+		cout << endl << "You are not alone in this space" << endl;
 		for (auto np : Npcs)
 		{
 			np.second->Look();
@@ -134,6 +135,25 @@ bool Room::RemoveNpc(Npc* OutNpc)
 	}
 
 	return false;
+}
+
+Creature* Room::GetCreature(const string& CreatureName) const
+{
+	// Check if creature is player
+	if (CreatureName == "Player")
+	{
+		return CurrentPlayer;
+	}
+	// Target is an NPC
+	else 
+	{
+		auto it = Npcs.find(CreatureName);
+		if (it != Npcs.cend())
+		{
+			return it->second;
+		}
+	}
+	return nullptr;
 }
 
 void Room::AddExit(Exit* NewExit)
