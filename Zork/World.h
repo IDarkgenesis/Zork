@@ -13,12 +13,13 @@ enum class GameCommand
 {
 	Look,
 	Go,
-	Unlock,
 	Attack,
 	Pick,
 	Drop,
 	Inventory,
 	Put,
+	Lock,
+	Unlock,
 	Quit,
 	NoCommand
 };

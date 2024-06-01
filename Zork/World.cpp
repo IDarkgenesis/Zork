@@ -25,6 +25,13 @@ World::World()
 	Exit* PrisonCourtyardExit = new Exit("south","You can see the big wooden door that goes to the Courtyard at you south.", "north", "The big wooden door to the Prison is at your back", Prison, Courtyard, PrisonCourtKey);
 
 	WorldEntities.insert(pair<string, Entity*>(Cell->GetName(), Cell));
+	WorldEntities.insert(pair<string, Entity*>(Prison->GetName(), Prison));
+	WorldEntities.insert(pair<string, Entity*>(CellPrisonExit->GetName(), CellPrisonExit));
+	WorldEntities.insert(pair<string, Entity*>(Courtyard->GetName(), Courtyard));
+	WorldEntities.insert(pair<string, Entity*>(PrisonCourtKey->GetName(), PrisonCourtKey));
+	WorldEntities.insert(pair<string, Entity*>(Bag->GetName(), Bag));
+	WorldEntities.insert(pair<string, Entity*>(Toolbox->GetName(), Toolbox));
+	WorldEntities.insert(pair<string, Entity*>(PrisonCourtyardExit->GetName(), PrisonCourtyardExit));
 
 	CurrentPlayer = new Player("Player", "A player", Cell);
 	Cell->PlayerEnters(CurrentPlayer);
@@ -67,8 +74,6 @@ bool World::ExecutePlayerCommand(const vector<string>& CommandTokens)
 			if (CommandTokens.size() > 1) return CurrentPlayer->Go(CommandTokens[1]);
 			else  return CurrentPlayer->Go(CommandTokens[0]);
 			break;
-		case GameCommand::Unlock:
-			break;
 		case GameCommand::Attack:
 			break;
 		case GameCommand::Pick:
@@ -83,6 +88,16 @@ bool World::ExecutePlayerCommand(const vector<string>& CommandTokens)
 		case GameCommand::Put:
 			if (CommandTokens.size() == 3) return CurrentPlayer->Put(CommandTokens[1], CommandTokens[2]);
 			else if (CommandTokens.size() == 4)  return CurrentPlayer->Put(CommandTokens[1], CommandTokens[3]);
+			break;
+		case GameCommand::Unlock:
+			if (CommandTokens.size() == 2) return CurrentPlayer->UnlockDoor(CommandTokens[1], "Nothing");
+			else if (CommandTokens.size() == 3) return CurrentPlayer->UnlockDoor(CommandTokens[1], CommandTokens[2]);
+			else if (CommandTokens.size() == 4)  return CurrentPlayer->UnlockDoor(CommandTokens[1], CommandTokens[3]);
+			break;
+		case GameCommand::Lock:
+			if (CommandTokens.size() == 2) return CurrentPlayer->LockDoor(CommandTokens[1], "Nothing");
+			else if (CommandTokens.size() == 3) return CurrentPlayer->LockDoor(CommandTokens[1], CommandTokens[2]);
+			else if (CommandTokens.size() == 4)  return CurrentPlayer->LockDoor(CommandTokens[1], CommandTokens[3]);
 			break;
 		case GameCommand::Quit:
 			bGameOver = true;
@@ -129,6 +144,8 @@ GameCommand World::TokenToCommand(string Token)
 	else if (CompareStrings(Token, "drop")) return GameCommand::Drop;
 	else if (CompareStrings(Token, "put")) return GameCommand::Put;
 	else if (CompareStrings(Token, "inventory")) return GameCommand::Inventory;
+	else if (CompareStrings(Token, "unlock")) return GameCommand::Unlock;
+	else if (CompareStrings(Token, "lock")) return GameCommand::Lock;
 	else if (CompareStrings(Token, "quit") || CompareStrings(Token, "exit")) return GameCommand::Quit;
 
 	return GameCommand::NoCommand;

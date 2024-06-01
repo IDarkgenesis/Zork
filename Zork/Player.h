@@ -23,6 +23,9 @@ public:
 
 	void RecieveDamage(Creature* Enemy, int DamageRecieved) override;
 
+	bool UnlockDoor(const string& Direction, const string& Key);
+	bool LockDoor(const string& Direction, const string& Key);
+
 	pair<Item*, Item*> GetItemFromInventory(const string& ItemName) const;
 
 private:

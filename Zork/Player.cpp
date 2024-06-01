@@ -140,6 +140,66 @@ void Player::RecieveDamage(Creature* Enemy, int DamageRecieved)
 	HitPoints -= DamageRecieved;
 }
 
+bool Player::UnlockDoor(const string& Direction, const string& Key)
+{
+	if (Location)
+	{
+		Exit* SelectedExit = Location->GetExit(Direction);
+
+		if (!SelectedExit)
+		{
+			cout << "There is no exit in " + Direction << endl;
+			return false;
+		}
+		else if (!SelectedExit->IsExitLocked())
+		{
+			cout << "This exit is already unlocked !" << endl;
+			return false;
+		}
+
+		auto FoundKey = GetItemFromInventory(Key);
+		if (SelectedExit->Unlock(FoundKey.first))
+		{
+			cout << "You unlocked " + Direction << endl;
+			return true;
+		}
+		return false;
+	}
+	// Player location should always be valid
+	cout << "An error with player Location happened" << endl;
+	return false;
+}
+
+bool Player::LockDoor(const string& Direction, const string& Key)
+{
+	if (Location)
+	{
+		Exit* SelectedExit = Location->GetExit(Direction);
+		if (!SelectedExit)
+		{
+			cout << "There is no exit in " + Direction << endl;
+			return false;
+		}
+		else if (SelectedExit->IsExitLocked())
+		{
+			cout << "This exit is already locked !" << endl;
+			return false;
+		}
+
+		auto FoundKey = GetItemFromInventory(Key);
+		if (SelectedExit->Lock(FoundKey.first))
+		{
+			cout << "You locked " + Direction << endl;
+			return true;
+		}
+		return false;
+	}
+
+	// Player location should always be valid
+	cout << "An error with player Location happened" << endl;
+	return false;
+}
+
 pair<Item*, Item*> Player::GetItemFromInventory(const string& ItemName) const
 {
 	pair<Item*, Item*> FoundItem = pair<Item*, Item*>(nullptr, nullptr);

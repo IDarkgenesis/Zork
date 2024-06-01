@@ -14,6 +14,7 @@ public:
 	void LookReverse() const;
 
 	bool Unlock(const Item* UnlockKey);
+	bool Lock(const Item* LockKey);
 
 	bool IsContainerRoom(const Room* SelectedRoom) const;
 

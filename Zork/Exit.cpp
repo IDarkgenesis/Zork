@@ -33,12 +33,25 @@ void Exit::LookReverse() const
 
 bool Exit::Unlock(const Item* UnlockKey)
 {
-	if (UnlockKey && UnlockKey == Key)
+	if (UnlockKey == Key)
 	{
 		Locked = false;
 		return true;
 	}
 
+	cout << "You could not unlock this exit" << endl;
+	return false;
+}
+
+bool Exit::Lock(const Item* LockKey)
+{
+	if (LockKey == Key)
+	{
+		Locked = true;
+		return true;
+	}
+
+	cout << "You could not lock this exit" << endl;
 	return false;
 }
 
