@@ -80,6 +80,10 @@ bool World::ExecutePlayerCommand(const vector<string>& CommandTokens)
 		case GameCommand::Inventory:
 			CurrentPlayer->Look();
 			return true;
+		case GameCommand::Put:
+			if (CommandTokens.size() == 3) return CurrentPlayer->Put(CommandTokens[1], CommandTokens[2]);
+			else if (CommandTokens.size() == 4)  return CurrentPlayer->Put(CommandTokens[1], CommandTokens[3]);
+			break;
 		case GameCommand::Quit:
 			bGameOver = true;
 			return true;
@@ -123,6 +127,7 @@ GameCommand World::TokenToCommand(string Token)
 	else if (CompareStrings(Token, "attack")) return GameCommand::Attack;
 	else if (CompareStrings(Token, "pick")) return GameCommand::Pick;
 	else if (CompareStrings(Token, "drop")) return GameCommand::Drop;
+	else if (CompareStrings(Token, "put")) return GameCommand::Put;
 	else if (CompareStrings(Token, "inventory")) return GameCommand::Inventory;
 	else if (CompareStrings(Token, "quit") || CompareStrings(Token, "exit")) return GameCommand::Quit;
 

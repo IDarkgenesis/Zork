@@ -49,13 +49,22 @@ bool Player::Go(const string& Direction)
 
 bool Player::Pick(const string& ItemName)
 {
-	// Check if the item we want to pick is already in our inventory
-	auto it = Inventory.find(ItemName);
-
-	if (it != Inventory.cend())
+	// Check if item we want is in inventory or container
+	auto FindItem = GetItemFromInventory(ItemName);
+	if (FindItem.first)
 	{
-		cout << ItemName + "Is already in you inventory !" << endl;
-		return false;
+		// Item was found inside a container
+		if (FindItem.second) {
+			FindItem.second->RemoveItemFromContainer(FindItem.first);
+			Inventory.insert(pair<string, Item*>(FindItem.first->GetName(), FindItem.first));
+			return true;
+		}
+		// Item already in our inventory
+		else 
+		{
+			cout << ItemName + " is already in your inventory." << endl;
+			return false;
+		}
 	}
 
 	// Check if item is in current room
@@ -68,54 +77,93 @@ bool Player::Pick(const string& ItemName)
 		return true;
 	}
 
-	// Check if item is in a container in inventory
-	for (auto CurrentItem : Inventory)
-	{
-		FoundItem = CurrentItem.second->GetItemFromContainer(ItemName);
-		if (FoundItem) 
-		{
-			Inventory.insert(pair<string, Item*>(FoundItem->GetName(), FoundItem));
-			CurrentItem.second->RemoveItemFromContainer(FoundItem);
-			cout << "and put in your inventory" << endl;
-			return true;
-		}
-	}
-
 	cout << "Looks like " + ItemName + " is nowhere to be found here." << endl;
 	return false;
 }
 
 bool Player::Drop(const string& ItemName)
 {	
-	// Check if the item we want to drop is at our inventory
-	auto it = Inventory.find(ItemName);
-
-	if (it != Inventory.cend())
+	// Check if item we want is in inventory or container
+	auto FindItem = GetItemFromInventory(ItemName);
+	if (FindItem.first) 
 	{
-		Location->AddItem(it->second);
-		Inventory.erase(it);
-		cout << "You dropped " + ItemName + " on the floor." << endl;
+		// Item is in a container
+		if (FindItem.second)
+		{
+			FindItem.second->RemoveItemFromContainer(FindItem.first);
+			Location->AddItem(FindItem.first);
+		}
+		// Item is in inventory
+		else {
+			auto it = Inventory.find(ItemName);
+			Inventory.erase(it);
+			Location->AddItem(FindItem.first);
+		}
+
+		cout << ItemName + " has been dropped on the floor " << endl;
 		return true;
 	}
 
-	// Check if the item we want to drop is in a container
-	Item* FoundItem = nullptr;
-	for (auto CurrentItem : Inventory)
-	{
-		FoundItem = CurrentItem.second->GetItemFromContainer(ItemName);
-		if (FoundItem)
-		{
-			Location->AddItem(FoundItem);
-			CurrentItem.second->RemoveItemFromContainer(FoundItem);
-			cout << "You dropped " + ItemName + " on the floor." << endl;
-			return true;
-		}
-	}
 	cout << "Could not find " + ItemName + " in inventory to drop." << endl;
+	return false;
+}
+
+bool Player::Put(const string& ItemName, const string& Container)
+{
+	auto FindItem = GetItemFromInventory(ItemName);
+	auto FindContainer = GetItemFromInventory(Container);
+
+	// Check wheater item is somewhere in inventory and not already contained in desired container
+	if (FindItem.first && FindContainer.first && FindItem.second != FindContainer.first) {
+		
+		if (FindItem.second)
+		{
+			FindItem.second->RemoveItemFromContainer(FindItem.first);
+		}
+		else 
+		{
+			auto it = Inventory.find(ItemName);
+			Inventory.erase(it);
+		}
+		
+		FindContainer.first->AddItemToContainer(FindItem.first);
+		return true;
+	}
+
+	cout << "You cannot make that action" << endl;
+
 	return false;
 }
 
 void Player::RecieveDamage(Creature* Enemy, int DamageRecieved)
 {
 	HitPoints -= DamageRecieved;
+}
+
+pair<Item*, Item*> Player::GetItemFromInventory(const string& ItemName) const
+{
+	pair<Item*, Item*> FoundItem = pair<Item*, Item*>(nullptr, nullptr);
+
+	// Check if item is in inventory
+	auto it = Inventory.find(ItemName);
+	if (it != Inventory.cend()) {
+		FoundItem.first = it->second;
+	}
+
+	// Look into containers for desired item
+	if (!FoundItem.first) {
+		pair<Item*, Item*> LookingItem;
+		for (auto CurrentItem : Inventory)
+		{
+			LookingItem = CurrentItem.second->GetItemFromContainer(ItemName);
+			if (LookingItem.first)
+			{
+				FoundItem.first = LookingItem.first;
+				FoundItem.second = LookingItem.second;
+				break;
+			}
+
+		}
+	}
+	return FoundItem;
 }

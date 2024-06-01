@@ -18,6 +18,7 @@ enum class GameCommand
 	Pick,
 	Drop,
 	Inventory,
+	Put,
 	Quit,
 	NoCommand
 };

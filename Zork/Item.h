@@ -21,7 +21,7 @@ public:
 
 	bool AddItemToContainer(Item* NewItem);
 	bool RemoveItemFromContainer(Item* OutItem);
-	Item* GetItemFromContainer(const string& ItemName) const;
+	pair<Item*, Item*> GetItemFromContainer(const string& ItemName);
 
 private:
 

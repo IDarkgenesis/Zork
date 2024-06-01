@@ -19,7 +19,11 @@ public:
 
 	bool Drop(const string& ItemName);
 
+	bool Put(const string& ItemName, const string& Container);
+
 	void RecieveDamage(Creature* Enemy, int DamageRecieved) override;
+
+	pair<Item*, Item*> GetItemFromInventory(const string& ItemName) const;
 
 private:
 

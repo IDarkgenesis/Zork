@@ -12,11 +12,12 @@ void Item::Look() const
 
 	if (Type == ItemType::Container && Container.size() > 0)
 	{
-		cout << "This is a container, and contains:" << endl;
+		cout << "--- Items inside " + Name + " ---" << endl;
 		for (auto it : Container)
 		{
 			it.second->Look();
 		}
+		cout << "--- End of items of " + Name + " ---" << endl;
 	}
 }
 
@@ -27,15 +28,17 @@ ItemType Item::GetItemType() const
 
 bool Item::AddItemToContainer(Item* NewItem)
 {
-	// Check if new item to store is not itself and current type is a container
-	if (NewItem && NewItem != this && !NewItem->GetItemFromContainer(Name) && Type == ItemType::Container)
-	{
-		auto it = Container.find(NewItem->GetName());
-
-		if (it == Container.cend())
+	if (NewItem && Type == ItemType::Container) {
+		auto ContainsThis = NewItem->GetItemFromContainer(Name);
+		if (!ContainsThis.first)
 		{
-			Container.insert(pair<string, Item*>(NewItem->GetName(), NewItem));
-			return true;
+			auto it = Container.find(NewItem->GetName());
+			if (it == Container.cend())
+			{
+				Container.insert(pair<string, Item*>(NewItem->GetName(),NewItem));
+				cout << NewItem->GetName() + " has been added to " + Name << endl;
+				return true;
+			}
 		}
 	}
 	return false;
@@ -45,48 +48,52 @@ bool Item::RemoveItemFromContainer(Item* OutItem)
 {
 	if (OutItem && Type == ItemType::Container)
 	{
-		// Look if the item is in current container
-		auto it = Container.find(OutItem->GetName());
-
-		if (it != Container.cend())
+		pair<Item*, Item*> FoundItem = GetItemFromContainer(OutItem->GetName());
+		if (FoundItem.first) 
 		{
-			Container.erase(it);
-			cout << OutItem->GetName() + "has been removed from " + Name;
-			return true;
-		}
-
-		// Check if this item is inside another Container of inventory
-		for (auto CurrentItem : Container)
-		{
-			if (CurrentItem.second->RemoveItemFromContainer(OutItem))
+			// Check if container is not self (avoid infinite loop)
+			if (FoundItem.second != this)
 			{
-				cout << OutItem->GetName() + "has been removed from " + CurrentItem.second->GetName();
-				return true;
+				FoundItem.second->RemoveItemFromContainer(FoundItem.first);	
 			}
+			else
+			{
+				auto it = Container.find(OutItem->GetName());
+				Container.erase(it);
+			}
+			cout << FoundItem.first->GetName() + " has been removed from " + FoundItem.second->GetName() << endl;
+			return true;
 		}
 	}
 	return false;
 }
 
-Item* Item::GetItemFromContainer(const string& ItemName) const
+pair<Item*, Item*> Item::GetItemFromContainer(const string& ItemName)
 {
+	pair<Item*, Item*> FoundItem = pair<Item*, Item*>(nullptr, nullptr);
+
 	if(Type == ItemType::Container)
 	{
 		auto it = Container.find(ItemName);
 		if (it != Container.cend())
 		{
-			return it->second;
+			FoundItem.first = it->second;
+			FoundItem.second = this;
 		}
-		// If not in current container check other containers
-
-		for (auto CurrentItem : Container)
+		// Look into containers for desired item
+		if (!FoundItem.first)
 		{
-			Item* ItemFound = CurrentItem.second->GetItemFromContainer(ItemName);
-			if (ItemFound)
+			for (auto CurrentItem : Container)
 			{
-				return ItemFound;
+				pair<Item*, Item*> LookingItemContainer = CurrentItem.second->GetItemFromContainer(ItemName);
+				if (LookingItemContainer.first)
+				{
+					FoundItem.first = LookingItemContainer.first;
+					FoundItem.second = LookingItemContainer.second;
+					break;
+				}
 			}
 		}
 	}
-	return nullptr;
+	return FoundItem;
 }
