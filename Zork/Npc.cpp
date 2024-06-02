@@ -124,7 +124,7 @@ void Npc::RecieveDamage(Creature* Enemy, int DamageRecieved)
     }
 }
 
-string Npc::TrackPlayerInRange()
+string Npc::TrackPlayerInRange() const
 {
     set<string> VisitedRooms;
     // First -> Child room, Second -> Parent Room
@@ -173,13 +173,18 @@ string Npc::TrackPlayerInRange()
         }
     }
 
-    if (RoomOfTarget == "None")
+    return ReconstructPathToPlayer(Path, RoomOfTarget);
+}
+
+string Npc::ReconstructPathToPlayer(const map<string, string>& Path, const string& Destination) const
+{
+    if (Destination == "None")
     {
         return "None";
     }
 
     // Reconstruct path to player;
-    string NextRoomName = RoomOfTarget;
+    string NextRoomName = Destination;
     string PreviousRoomName = "None";
     int DistanceToPlayer = 0;
     while (NextRoomName != Location->GetName())
@@ -196,7 +201,7 @@ string Npc::TrackPlayerInRange()
 
     for (auto CurrentExit : Location->GetExitList())
     {
-        if (CurrentExit.second->GetContainerRoom()->GetName() == PreviousRoomName) 
+        if (CurrentExit.second->GetContainerRoom()->GetName() == PreviousRoomName)
         {
             return CurrentExit.second->GetReversePathName();
         }

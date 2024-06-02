@@ -25,6 +25,8 @@ private:
 
 	int AggroDistance;
 
-	string TrackPlayerInRange();
+	string TrackPlayerInRange() const;
+
+	string ReconstructPathToPlayer(const map<string, string>& Path , const string& Destination ) const;
 };
 
