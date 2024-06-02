@@ -13,7 +13,7 @@ World::World()
 	Exit* CellPrisonExit = new Exit("east", "The cell door at your right looks like its open, thy must have forgot to close it.", "west", "Although its a bit dark you can still see your cell behind.", Cell, Prison);
 
 	Room* Courtyard = new Room("Courtyard", "Finally some fresh air, its a bit cold out here");
-	Npc* Goblin = new Npc("Goblin", "A green and vile creature", Cell, true, 10, 1);
+	Npc* Goblin = new Npc("Goblin", "A green and vile creature", Prison, true, 10, 1);
 
 	Item* PrisonCourtKey = new Item("PrisonCourtKey", "This key opens the wooden door that connects the Prison with the Courtyard", ItemType::Key);
 	Prison->AddItem(PrisonCourtKey);
@@ -25,6 +25,14 @@ World::World()
 	Prison->AddItem(Toolbox);
 
 	Exit* PrisonCourtyardExit = new Exit("south","You can see the big wooden door that goes to the Courtyard at you south.", "north", "The big wooden door to the Prison is at your back", Prison, Courtyard, PrisonCourtKey);
+
+	Item* Sword = new Item("Sword", "A sharp sword", ItemType::Weapon, 5);
+	Item* Chainamail = new Item("Chainamail", "A trustworthy armor", ItemType::Armor, 15);
+	Item* Leathercap = new Item("Leathercap", "A lether cap", ItemType::Armor, 5);
+
+	Cell->AddItem(Sword);
+	Cell->AddItem(Chainamail);
+	Goblin->AutoEquip(Leathercap);
 
 	WorldEntities.insert(pair<string, Entity*>(Cell->GetName(), Cell));
 	WorldEntities.insert(pair<string, Entity*>(Prison->GetName(), Prison));
@@ -109,6 +117,12 @@ bool World::ExecutePlayerCommand(const vector<string>& CommandTokens)
 			else if (CommandTokens.size() == 3) return CurrentPlayer->LockDoor(CommandTokens[1], CommandTokens[2]);
 			else if (CommandTokens.size() == 4)  return CurrentPlayer->LockDoor(CommandTokens[1], CommandTokens[3]);
 			break;
+		case GameCommand::Equip:
+			if (CommandTokens.size() == 2) return CurrentPlayer->EquipItem(CommandTokens[1]);
+			break;
+		case GameCommand::Unequip:
+			if (CommandTokens.size() == 2) return CurrentPlayer->UnequipItem(CommandTokens[1]);
+			break;
 		case GameCommand::Quit:
 			bGameOver = true;
 			return true;
@@ -156,6 +170,8 @@ GameCommand World::TokenToCommand(string Token)
 	else if (CompareStrings(Token, "inventory")) return GameCommand::Inventory;
 	else if (CompareStrings(Token, "unlock")) return GameCommand::Unlock;
 	else if (CompareStrings(Token, "lock")) return GameCommand::Lock;
+	else if (CompareStrings(Token, "equip")) return GameCommand::Equip;
+	else if (CompareStrings(Token, "unequip")) return GameCommand::Unequip;
 	else if (CompareStrings(Token, "quit") || CompareStrings(Token, "exit")) return GameCommand::Quit;
 
 	return GameCommand::NoCommand;

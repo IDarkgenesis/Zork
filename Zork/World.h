@@ -20,6 +20,8 @@ enum class GameCommand
 	Put,
 	Lock,
 	Unlock,
+	Equip,
+	Unequip,
 	Quit,
 	NoCommand
 };

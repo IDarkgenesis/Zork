@@ -3,6 +3,7 @@
 #include "Room.h"
 #include "Exit.h"
 #include "Player.h"
+#include "Item.h"
 #include<string>
 
 Npc::Npc(string Name, string Description, Room* Location, bool Hostile, int HitPoints, int BaseDamage) : 
@@ -88,7 +89,16 @@ void Npc::RecieveDamage(Creature* Enemy, int DamageRecieved)
     {
         CurrentTarget = Enemy;
         Hostile = true;
-        HitPoints -= DamageRecieved;
+
+        int MitigatedDamage = EquippedArmor ? (EquippedArmor->GetValue() / 5) : 0;
+        int FinalRecievedDamage = DamageRecieved - MitigatedDamage;
+
+        HitPoints -= max(FinalRecievedDamage, 0);
+
+        if (MitigatedDamage > 0)
+        {
+            cout << Name + " has mitigated " + to_string(MitigatedDamage) + " damage with its armor" << endl;
+        }
 
         if (IsAlive())
         {
@@ -97,6 +107,7 @@ void Npc::RecieveDamage(Creature* Enemy, int DamageRecieved)
         else
         {
             cout << Name << " died" << endl;
+            HandleDeath();
         }
     }
 }

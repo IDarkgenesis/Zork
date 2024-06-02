@@ -1,29 +1,46 @@
 #include "Item.h"
+#include<string>
 
-Item::Item(string Name, string Description, ItemType Type)
+Item::Item(string Name, string Description, ItemType Type, int Value)
 	: Entity(Name, Description)
 {
 	this->Type = Type;
+	this->Value = Value;
 }
 
 void Item::Look() const
 {
-	Entity::Look();
+	cout << Name + ": " + Description;
 
 	if (Type == ItemType::Container && Container.size() > 0)
 	{
-		cout << "--- Items inside " + Name + " ---" << endl;
+		cout << endl << "--- Items inside " + Name + " ---" << endl;
 		for (auto it : Container)
 		{
 			it.second->Look();
 		}
 		cout << "--- End of items of " + Name + " ---" << endl;
 	}
+	else if (Type == ItemType::Weapon)
+	{
+		cout << ", deals " + to_string(Value) + " damage";
+	}
+	else if (Type == ItemType::Armor) 
+	{
+		cout << ", has " + to_string(Value) + " defence";
+	}
+
+	cout << endl;
 }
 
 ItemType Item::GetItemType() const
 {
 	return Type;
+}
+
+int Item::GetValue() const
+{
+	return Value;
 }
 
 bool Item::AddItemToContainer(Item* NewItem)

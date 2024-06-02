@@ -15,21 +15,11 @@ public:
 
 	bool Go(const string& Direction) override;
 
-	bool Pick(const string& ItemName);
-
-	bool Drop(const string& ItemName);
-
 	bool Put(const string& ItemName, const string& Container);
 
 	void RecieveDamage(Creature* Enemy, int DamageRecieved) override;
 
 	bool UnlockDoor(const string& Direction, const string& Key);
 	bool LockDoor(const string& Direction, const string& Key);
-
-	pair<Item*, Item*> GetItemFromInventory(const string& ItemName) const;
-
-private:
-
-	map<string, Item*> Inventory;
 };
 

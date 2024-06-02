@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Entity.h"
-#include<vector>
+#include<map>
 
 class Room;
+class Item;
 
 class Creature : public Entity
 {
@@ -15,12 +16,25 @@ public:
 	bool Attack(const string& Target);
 	bool Attack();
 
+	bool Pick(const string& ItemName);
+	bool Drop(const string& ItemName);
+
+	bool EquipItem(const string& ItemName);
+	bool UnequipItem(const string& ItemName);
+	
+	void AutoEquip(Item* EquipItem);
+
 	virtual void RecieveDamage(Creature* Enemy, int DamageRecieved);
 
 	bool IsAlive() const;
 	bool HasTarget() const;
 
+	void HandleDeath();
+
 	Room* GetCurrentLocation() const;
+
+	pair<Item*, Item*> GetItemFromInventory(const string& ItemName) const;
+	
 
 protected:
 	Room* Location;
@@ -30,5 +44,13 @@ protected:
 	int BaseDamage;
 
 	Creature* CurrentTarget;
+
+	map<string, Item*> Inventory;
+
+	bool AddItemToInventory(Item* OutItem);
+	bool RemoveItemFromInventory(Item* NewItem);
+	
+	Item* EquippedWeapon;
+	Item* EquippedArmor;
 };
 
