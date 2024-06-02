@@ -5,7 +5,7 @@
 class Npc : public Creature
 {
 public:
-	Npc(string name, string Description, Room* Location, bool Hostile, int HitPoints = 1, int BaseDamage = 1);
+	Npc(string name, string Description, Room* Location, bool Hostile, int HitPoints = 1, int BaseDamage = 1, int AggroDistance = 1);
 
 	void Look() const override;
 
@@ -20,5 +20,11 @@ public:
 private:
 
 	bool Hostile;
+
+	Room* HomeRoom;
+
+	int AggroDistance;
+
+	string TrackPlayerInRange();
 };
 

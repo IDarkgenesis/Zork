@@ -177,3 +177,8 @@ Exit* Room::GetExit(const string& ExitName) const
 	return nullptr;
 }
 
+map<string, Exit*> Room::GetExitList() const
+{
+	return Exits;
+}
+

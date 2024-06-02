@@ -5,16 +5,21 @@
 #include "Player.h"
 #include "Item.h"
 #include<string>
+#include<set>
+#include<queue>
 
-Npc::Npc(string Name, string Description, Room* Location, bool Hostile, int HitPoints, int BaseDamage) : 
+Npc::Npc(string Name, string Description, Room* Location, bool Hostile, int HitPoints, int BaseDamage, int AggroDistance) :
     Creature(Name, Description, Location, HitPoints, BaseDamage)
 {
     CurrentTarget = nullptr;
     this->Hostile = Hostile;
+    this->AggroDistance = AggroDistance;
     if(Location)
     {
         Location->AddNpc(this);
+        
     }
+    HomeRoom = Location;
 }
 
 void Npc::Look() const
@@ -80,6 +85,10 @@ void Npc::Tick()
             CurrentTarget = Location->GetPlayerInRoom();
             Attack();
         }
+        else if(Hostile)
+        {
+            string direction = TrackPlayerInRange();
+        }
     }
 }
 
@@ -103,4 +112,52 @@ void Npc::RecieveDamage(Creature* Enemy, int DamageRecieved)
             HandleDeath();
         }
     }
+}
+
+string Npc::TrackPlayerInRange()
+{
+    set<string> VisitedRooms;
+    // First -> Child room, Second -> Parent Room
+    vector<pair<string, string>> PathVector;
+
+    queue<Room*> Queue;
+    Queue.push(Location);
+
+    while (!Queue.empty())
+    {
+        Room* CurrentRoom = Queue.front();
+        
+        Queue.pop();
+
+        // Check if current Room is not visited
+        auto VisitedRoomIterator = VisitedRooms.find(CurrentRoom->GetName());
+        if (VisitedRoomIterator == VisitedRooms.cend())
+        {
+            VisitedRooms.insert(CurrentRoom->GetName());
+
+            // If player in room -> Push current room and break loop
+            if (CurrentRoom->IsPlayerInRoom()) 
+            {
+                PathVector.push_back(pair<string, string>(CurrentRoom->GetName(),""));
+                break;
+            }
+            // If player not in room -> Kepp looking in nex rooms
+            else
+            {
+                for (auto exit : CurrentRoom->GetExitList())
+                {
+                    Room* NextRoom = exit.second->IsContainerRoom(CurrentRoom) ? exit.second->GetLeadsToRoom() : exit.second->GetContainerRoom();
+                    // Add adjacent rooms if not already visited
+                    VisitedRoomIterator = VisitedRooms.find(NextRoom->GetName());
+                    if (VisitedRoomIterator == VisitedRooms.cend())
+                    {
+                        Queue.push(NextRoom);
+                        PathVector.push_back(pair<string, string>(NextRoom->GetName(), CurrentRoom->GetName()));
+                    }
+                }
+            }
+        }
+    }
+
+    return "XDD";
 }

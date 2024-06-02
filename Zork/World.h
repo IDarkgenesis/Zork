@@ -8,6 +8,7 @@ using namespace std;
 
 class Entity;
 class Player;
+class Room;
 
 enum class GameCommand
 {
@@ -47,6 +48,8 @@ private:
 	void AddToWorldEntities(Entity* NewEntity);
 
 	Player* CurrentPlayer;
+
+	Room* WinningRoom;
 
 	bool CompareStrings(string IncommingString, string ExpectedString);
 

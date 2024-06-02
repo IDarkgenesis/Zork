@@ -8,46 +8,30 @@
 
 World::World()
 { 
+
 	Room* Cell = new Room("Cell", "You have been in this disgusting cell for weeks.");
 	Room* Prison = new Room("Prison", "You have walked through this hallway everytime you are punished with force labor.");
+	Room* GuardRoom = new Room("GuardRoom", "This is where guards rest when they are not keeping an eye on prisioners.");
+	Room* Courtyard = new Room("Courtyard", "You can see the forest at a distance, if only you cold reach it, you would be free.");
+	Room* PrisonGate = new Room("PrisonGate", "You are in front of the big prison gate, it's impossible to escape through this route");
+	Room* Mines = new Room("Mines", "The dark and cold mines that you have to work on every day, you hate this place");
+	Room* Forest = new Room("Forest", "Finally you are outside of the prison !");
+
+	Item* GuardRoomKey = new Item("GuardRoomKey", "This key opens the metal door that connects the Prison with the GuardRoom", ItemType::Key);
+	Item* GuardForestKey = new Item("GuardForestKey", "This key allows you to open the door at the Guard Room that leads to the Forest", ItemType::Key);
+
 	Exit* CellPrisonExit = new Exit("east", "The cell door at your right looks like its open, thy must have forgot to close it.", "west", "Although its a bit dark you can still see your cell behind.", Cell, Prison);
+	Exit* PrisonCourtyardExit = new Exit("south", "You can see the big wooden door that goes to the Courtyard at you south.", "north", "The big wooden door to the Prison is at your back", Prison, Courtyard);
+	Exit* PrisonGaurdRoomExit = new Exit("east", "At your right there is the guard room", "west", "Going west would allow you to go back to the Prison", Prison, GuardRoom, GuardRoomKey);
+	Exit* GaurdRoomForestExit = new Exit("east", "You feel fresh air comming form the east", "wast", "You can go back to the Guard Room if you go west", GuardRoom, Forest, GuardForestKey);
+	Exit* CourtyardGaurdRoomExit = new Exit("east", "At your east you see the path that guards use to go to their office", "south", "You can go back to the courtyard if you go south", Courtyard, GuardRoom);
+	Exit* CourtyardMinesExit = new Exit("west", "At your left there are the mines", "east", "You can go back to the courtyard if you go east", Courtyard, Mines);
+	Exit* CourtyarPrisonGateExit = new Exit("south", "Going down you can see the big prison gate", "north", "North is the direction you should take if want to go back", Courtyard, PrisonGate);
 
-	Room* Courtyard = new Room("Courtyard", "Finally some fresh air, its a bit cold out here");
-	Npc* Goblin = new Npc("Goblin", "A green and vile creature", Prison, true, 10, 1);
-
-	Item* PrisonCourtKey = new Item("PrisonCourtKey", "This key opens the wooden door that connects the Prison with the Courtyard", ItemType::Key);
-	Prison->AddItem(PrisonCourtKey);
-
-	Item* Bag = new Item("Bag", "Is a small bag, lucky you!", ItemType::Container);
-	Cell->AddItem(Bag);
-
-	Item* Toolbox = new Item("Toolbox", "A toolbox, you can store things to it!", ItemType::Container);
-	Prison->AddItem(Toolbox);
-
-	Exit* PrisonCourtyardExit = new Exit("south","You can see the big wooden door that goes to the Courtyard at you south.", "north", "The big wooden door to the Prison is at your back", Prison, Courtyard, PrisonCourtKey);
-
-	Item* Sword = new Item("Sword", "A sharp sword", ItemType::Weapon, 5);
-	Item* Chainamail = new Item("Chainamail", "A trustworthy armor", ItemType::Armor, 15);
-	Item* Leathercap = new Item("Leathercap", "A lether cap", ItemType::Armor, 5);
-
-	Cell->AddItem(Sword);
-	Cell->AddItem(Chainamail);
-	Goblin->AutoEquip(Leathercap);
-
-	AddToWorldEntities(Cell);
-	AddToWorldEntities(Prison);
-	AddToWorldEntities(Courtyard);
-	AddToWorldEntities(Goblin);
-	AddToWorldEntities(PrisonCourtKey);
-	AddToWorldEntities(Bag);
-	AddToWorldEntities(Toolbox);
-	AddToWorldEntities(Sword);
-	AddToWorldEntities(Chainamail);
-	AddToWorldEntities(Leathercap);
-
+	WinningRoom = Forest;
 	CurrentPlayer = new Player("Player", "A player", Cell, 100, 2);
 	Cell->PlayerEnters(CurrentPlayer);
-
+	
 }
 
 void World::Tick(const vector<string>& CommandTokens)
@@ -59,7 +43,7 @@ void World::Tick(const vector<string>& CommandTokens)
 			entity.second->Tick();
 		}
 
-		if (!CurrentPlayer->IsAlive())
+		if (!CurrentPlayer->IsAlive() || CurrentPlayer->GetCurrentLocation() == WinningRoom)
 		{
 			bGameOver = true;
 		}

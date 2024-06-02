@@ -35,6 +35,7 @@ public:
 
 	void AddExit(Exit* NewExit);
 	Exit* GetExit(const string& ExitName) const;
+	map<string, Exit*> GetExitList() const;
 
 private:
 	map<string, Exit*> Exits;
