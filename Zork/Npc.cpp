@@ -53,15 +53,21 @@ bool Npc::Go(const string& Direction)
         if (!SelectedExit->IsExitLocked())
         {
             Room* NewLocation = SelectedExit->IsContainerRoom(Location) ? SelectedExit->GetLeadsToRoom() : SelectedExit->GetContainerRoom();
+            
+            if (Location->IsPlayerInRoom())
+            {
+                cout << Name + " moves " + Direction << endl;
+            }
+            
             Location->RemoveNpc(this);
             NewLocation->AddNpc(this);
 
+            Location = NewLocation;
+
             if (Location->IsPlayerInRoom())
             {
-                cout << Name + " is moving " + Direction << endl;
+                cout << Name + " moved in" << endl;
             }
-
-            Location = NewLocation;
         }
     }
     return false;
@@ -88,6 +94,10 @@ void Npc::Tick()
         else if(Hostile)
         {
             string direction = TrackPlayerInRange();
+            if (direction != "None")
+            {
+                Go(direction);
+            }
         }
     }
 }
@@ -118,7 +128,8 @@ string Npc::TrackPlayerInRange()
 {
     set<string> VisitedRooms;
     // First -> Child room, Second -> Parent Room
-    vector<pair<string, string>> PathVector;
+    map<string, string> Path;
+    string RoomOfTarget = "None";
 
     queue<Room*> Queue;
     Queue.push(Location);
@@ -138,7 +149,7 @@ string Npc::TrackPlayerInRange()
             // If player in room -> Push current room and break loop
             if (CurrentRoom->IsPlayerInRoom()) 
             {
-                PathVector.push_back(pair<string, string>(CurrentRoom->GetName(),""));
+                RoomOfTarget = CurrentRoom->GetName();
                 break;
             }
             // If player not in room -> Kepp looking in nex rooms
@@ -146,18 +157,54 @@ string Npc::TrackPlayerInRange()
             {
                 for (auto exit : CurrentRoom->GetExitList())
                 {
-                    Room* NextRoom = exit.second->IsContainerRoom(CurrentRoom) ? exit.second->GetLeadsToRoom() : exit.second->GetContainerRoom();
-                    // Add adjacent rooms if not already visited
-                    VisitedRoomIterator = VisitedRooms.find(NextRoom->GetName());
-                    if (VisitedRoomIterator == VisitedRooms.cend())
+                    if(!exit.second->IsExitLocked())
                     {
-                        Queue.push(NextRoom);
-                        PathVector.push_back(pair<string, string>(NextRoom->GetName(), CurrentRoom->GetName()));
+                        Room* NextRoom = exit.second->IsContainerRoom(CurrentRoom) ? exit.second->GetLeadsToRoom() : exit.second->GetContainerRoom();
+                        // Add adjacent rooms if not already visited
+                        VisitedRoomIterator = VisitedRooms.find(NextRoom->GetName());
+                        if (VisitedRoomIterator == VisitedRooms.cend())
+                        {
+                            Queue.push(NextRoom);
+                            Path.insert(pair<string, string>(NextRoom->GetName(), CurrentRoom->GetName()));
+                        }
                     }
                 }
             }
         }
     }
 
-    return "XDD";
+    if (RoomOfTarget == "None")
+    {
+        return "None";
+    }
+
+    // Reconstruct path to player;
+    string NextRoomName = RoomOfTarget;
+    string PreviousRoomName = "None";
+    int DistanceToPlayer = 0;
+    while (NextRoomName != Location->GetName())
+    {
+        PreviousRoomName = NextRoomName;
+        NextRoomName = Path.find(NextRoomName)->second;
+        ++DistanceToPlayer;
+    }
+
+    if (DistanceToPlayer > AggroDistance)
+    {
+        return "None";
+    }
+
+    for (auto CurrentExit : Location->GetExitList())
+    {
+        if (CurrentExit.second->GetContainerRoom()->GetName() == PreviousRoomName) 
+        {
+            return CurrentExit.second->GetReversePathName();
+        }
+        else if (CurrentExit.second->GetLeadsToRoom()->GetName() == PreviousRoomName)
+        {
+            return CurrentExit.second->GetName();
+        }
+    }
+
+    return "None";
 }
