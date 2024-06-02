@@ -34,15 +34,16 @@ World::World()
 	Cell->AddItem(Chainamail);
 	Goblin->AutoEquip(Leathercap);
 
-	WorldEntities.insert(pair<string, Entity*>(Cell->GetName(), Cell));
-	WorldEntities.insert(pair<string, Entity*>(Prison->GetName(), Prison));
-	WorldEntities.insert(pair<string, Entity*>(CellPrisonExit->GetName(), CellPrisonExit));
-	WorldEntities.insert(pair<string, Entity*>(Courtyard->GetName(), Courtyard));
-	WorldEntities.insert(pair<string, Entity*>(PrisonCourtKey->GetName(), PrisonCourtKey));
-	WorldEntities.insert(pair<string, Entity*>(Bag->GetName(), Bag));
-	WorldEntities.insert(pair<string, Entity*>(Toolbox->GetName(), Toolbox));
-	WorldEntities.insert(pair<string, Entity*>(PrisonCourtyardExit->GetName(), PrisonCourtyardExit));
-	WorldEntities.insert(pair<string, Entity*>(Goblin->GetName(), Goblin));
+	AddToWorldEntities(Cell);
+	AddToWorldEntities(Prison);
+	AddToWorldEntities(Courtyard);
+	AddToWorldEntities(Goblin);
+	AddToWorldEntities(PrisonCourtKey);
+	AddToWorldEntities(Bag);
+	AddToWorldEntities(Toolbox);
+	AddToWorldEntities(Sword);
+	AddToWorldEntities(Chainamail);
+	AddToWorldEntities(Leathercap);
 
 	CurrentPlayer = new Player("Player", "A player", Cell, 100, 2);
 	Cell->PlayerEnters(CurrentPlayer);

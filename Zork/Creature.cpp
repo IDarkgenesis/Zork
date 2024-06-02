@@ -48,8 +48,10 @@ bool Creature::Attack()
 {
 	if (CurrentTarget && Location->GetCreature(CurrentTarget->GetName()) && CurrentTarget->IsAlive())
 	{
-		cout << endl << Name << " attacks " + CurrentTarget->GetName() + " for " + to_string(BaseDamage) + " damage" << endl;
-		CurrentTarget->RecieveDamage(this, BaseDamage);
+		int DamageDealt = EquippedWeapon ? EquippedWeapon->GetValue() : BaseDamage;
+
+		cout << endl << Name << " attacks " + CurrentTarget->GetName() + " for " + to_string(DamageDealt) + " damage" << endl;
+		CurrentTarget->RecieveDamage(this, DamageDealt);
 		return true;
 	}
 
@@ -214,6 +216,19 @@ void Creature::AutoEquip(Item* EquipItem)
 void Creature::RecieveDamage(Creature* Enemy, int DamageRecieved)
 {
 
+	int DamageMitigation = EquippedArmor ? (EquippedArmor->GetValue() / 5) : 0;
+	int FinalRecievedDamage = max(DamageRecieved - DamageMitigation, 0);
+
+	HitPoints -= FinalRecievedDamage;
+
+	if (FinalRecievedDamage > 0)
+	{
+		cout << Name + " has mitigated damage with its armor and recieved " + to_string(FinalRecievedDamage) << endl;
+	}
+	else 
+	{
+		cout << Name + "'s defence absorbed the damage" << endl;
+	}
 }
 
 bool Creature::IsAlive() const

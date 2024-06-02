@@ -51,5 +51,6 @@ private:
 	bool CompareStrings(string IncommingString, string ExpectedString);
 
 	GameCommand TokenToCommand(string Token);
+
 };
 

@@ -85,20 +85,13 @@ void Npc::Tick()
 
 void Npc::RecieveDamage(Creature* Enemy, int DamageRecieved)
 {
+    Creature::RecieveDamage(Enemy, DamageRecieved);
+
     if (Enemy)
     {
         CurrentTarget = Enemy;
         Hostile = true;
 
-        int MitigatedDamage = EquippedArmor ? (EquippedArmor->GetValue() / 5) : 0;
-        int FinalRecievedDamage = DamageRecieved - MitigatedDamage;
-
-        HitPoints -= max(FinalRecievedDamage, 0);
-
-        if (MitigatedDamage > 0)
-        {
-            cout << Name + " has mitigated " + to_string(MitigatedDamage) + " damage with its armor" << endl;
-        }
 
         if (IsAlive())
         {

@@ -96,7 +96,8 @@ bool Player::Put(const string& ItemName, const string& Container)
 
 void Player::RecieveDamage(Creature* Enemy, int DamageRecieved)
 {
-	HitPoints -= DamageRecieved;
+
+	Creature::RecieveDamage(Enemy, DamageRecieved);
 
 	if (IsAlive())
 	{
