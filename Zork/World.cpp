@@ -28,7 +28,7 @@ World::World()
 	Exit* CourtyardMinesExit = new Exit("west", "At your left there are the mines", "east", "You can go back to the courtyard if you go east", Courtyard, Mines);
 	Exit* CourtyarPrisonGateExit = new Exit("south", "Going down you can see the big prison gate", "north", "North is the direction you should take if want to go back", Courtyard, PrisonGate);
 
-	Npc* GuardChief = new Npc("GuardChief", "He is the leader of the guards, diligent at his job", GuardRoom, true, 25, 1, 5);
+	Npc* GuardChief = new Npc("GuardChief", "He is the leader of the guards, diligent at his job", GuardRoom, true, 25, 1, 2);
 
 	AddToWorldEntities(GuardChief);
 

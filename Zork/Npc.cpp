@@ -153,20 +153,17 @@ string Npc::TrackPlayerInRange() const
                 break;
             }
             // If player not in room -> Kepp looking in nex rooms
-            else
+            for (auto exit : CurrentRoom->GetExitList())
             {
-                for (auto exit : CurrentRoom->GetExitList())
+                if (!exit.second->IsExitLocked())
                 {
-                    if(!exit.second->IsExitLocked())
+                    Room* NextRoom = exit.second->IsContainerRoom(CurrentRoom) ? exit.second->GetLeadsToRoom() : exit.second->GetContainerRoom();
+                    // Add adjacent rooms if not already visited
+                    VisitedRoomIterator = VisitedRooms.find(NextRoom->GetName());
+                    if (VisitedRoomIterator == VisitedRooms.cend())
                     {
-                        Room* NextRoom = exit.second->IsContainerRoom(CurrentRoom) ? exit.second->GetLeadsToRoom() : exit.second->GetContainerRoom();
-                        // Add adjacent rooms if not already visited
-                        VisitedRoomIterator = VisitedRooms.find(NextRoom->GetName());
-                        if (VisitedRoomIterator == VisitedRooms.cend())
-                        {
-                            Queue.push(NextRoom);
-                            Path.insert(pair<string, string>(NextRoom->GetName(), CurrentRoom->GetName()));
-                        }
+                        Queue.push(NextRoom);
+                        Path.insert(pair<string, string>(NextRoom->GetName(), CurrentRoom->GetName()));
                     }
                 }
             }
