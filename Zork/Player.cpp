@@ -103,6 +103,10 @@ void Player::RecieveDamage(Creature* Enemy, int DamageRecieved)
 	{
 		cout << "You have " + to_string(HitPoints) + " hitpoints" << endl;
 	}
+	else
+	{
+		cout << "It looks like you weren't prepared enough for this challenge, try a different approcah!" << endl;
+	}
 }
 
 bool Player::UnlockDoor(const string& Direction, const string& Key)
@@ -162,5 +166,49 @@ bool Player::LockDoor(const string& Direction, const string& Key)
 
 	// Player location should always be valid
 	cout << "An error with player Location happened" << endl;
+	return false;
+}
+
+bool Player::OpenContainer(const string& ContainerName)
+{
+	// First check if Container is in inventory
+	auto FindContainer = GetItemFromInventory(ContainerName);
+	
+	if (FindContainer.first)
+	{
+		return FindContainer.first->OpenContainer();
+	}
+
+	// Check if item is in room
+	auto ContainerInRoom = Location->GetItem(ContainerName);
+
+	if (ContainerInRoom)
+	{
+		return ContainerInRoom->OpenContainer();
+	}
+
+	cout << "Could not find " + ContainerName << endl;
+	return false;
+}
+
+bool Player::CloseContainer(const string& ContainerName)
+{
+	// First check if Container is in inventory
+	auto FindContainer = GetItemFromInventory(ContainerName);
+
+	if (FindContainer.first)
+	{
+		return FindContainer.first->CloseContainer();
+	}
+
+	// Check if item is in room
+	auto ContainerInRoom = Location->GetItem(ContainerName);
+
+	if (ContainerInRoom)
+	{
+		return ContainerInRoom->CloseContainer();
+	}
+
+	cout << "Could not find " + ContainerName << endl;
 	return false;
 }

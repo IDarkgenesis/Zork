@@ -6,13 +6,14 @@ Item::Item(string Name, string Description, ItemType Type, int Value)
 {
 	this->Type = Type;
 	this->Value = Value;
+	OpenedContainer = false;
 }
 
 void Item::Look() const
 {
 	cout << Name + ": " + Description;
 
-	if (Type == ItemType::Container && Container.size() > 0)
+	if (Type == ItemType::Container && Container.size() > 0 && OpenedContainer)
 	{
 		cout << endl << "--- Items inside " + Name + " ---" << endl;
 		for (auto it : Container)
@@ -46,6 +47,13 @@ int Item::GetValue() const
 bool Item::AddItemToContainer(Item* NewItem)
 {
 	if (NewItem && Type == ItemType::Container) {
+
+		if (!OpenedContainer)
+		{
+			cout << "Container " + Name + " is not opened" << endl;
+			return false;
+		}
+
 		auto ContainsThis = NewItem->GetItemFromContainer(Name);
 		if (!ContainsThis.first)
 		{
@@ -65,6 +73,13 @@ bool Item::RemoveItemFromContainer(Item* OutItem)
 {
 	if (OutItem && Type == ItemType::Container)
 	{
+
+		if (!OpenedContainer)
+		{
+			cout << "Container " + Name + " is not opened" << endl;
+			return false;
+		}
+
 		pair<Item*, Item*> FoundItem = GetItemFromContainer(OutItem->GetName());
 		if (FoundItem.first) 
 		{
@@ -91,6 +106,12 @@ pair<Item*, Item*> Item::GetItemFromContainer(const string& ItemName)
 
 	if(Type == ItemType::Container)
 	{
+		if (!OpenedContainer)
+		{
+			cout << "Container " + Name + " is not opened, can't look if the item is inside" << endl;
+			return FoundItem;
+		}
+
 		auto it = Container.find(ItemName);
 		if (it != Container.cend())
 		{
@@ -113,4 +134,52 @@ pair<Item*, Item*> Item::GetItemFromContainer(const string& ItemName)
 		}
 	}
 	return FoundItem;
+}
+
+void Item::AutoAddItem(Item* NewItem)
+{
+	auto FindItem = Container.find(NewItem->Name);
+
+	if (FindItem == Container.cend())
+	{
+		Container.insert(pair<string, Item*>(NewItem->GetName(), NewItem));
+	}
+	
+}
+
+bool Item::OpenContainer()
+{
+	
+	if (Type != ItemType::Container)
+	{
+		return false;
+	}
+
+	if (OpenedContainer)
+	{
+		cout << Name + " is already oppened" << endl;
+		return false;
+	}
+	
+	cout << "You opened " + Name << endl;
+	OpenedContainer = true;
+	return true;
+}
+
+bool Item::CloseContainer()
+{
+	if (Type != ItemType::Container)
+	{
+		return false;
+	}
+
+	if (!OpenedContainer)
+	{
+		cout << Name + " is already closed" << endl;
+		return false;
+	}
+
+	cout << "You closed " + Name << endl;
+	OpenedContainer = false;
+	return true;
 }

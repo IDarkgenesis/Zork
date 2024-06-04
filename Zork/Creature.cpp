@@ -167,6 +167,13 @@ bool Creature::EquipItem(const string& ItemName)
 
 bool Creature::UnequipItem(const string& ItemName)
 {
+
+	if (ItemName != "weapon" && ItemName != "armor")
+	{
+		cout << "Plase input a slot name, either weapon or armor" << endl;
+		return false;
+	}
+
 	Item* UnequipedItem = (ItemName == "weapon") ? EquippedWeapon : EquippedArmor;
 	if (UnequipedItem) 
 	{
@@ -221,13 +228,9 @@ void Creature::RecieveDamage(Creature* Enemy, int DamageRecieved)
 
 	HitPoints -= FinalRecievedDamage;
 
-	if (FinalRecievedDamage > 0)
+	if (DamageMitigation > 0)
 	{
 		cout << Name + " has mitigated damage with its armor and recieved " + to_string(FinalRecievedDamage) << endl;
-	}
-	else 
-	{
-		cout << Name + "'s defence absorbed the damage" << endl;
 	}
 }
 

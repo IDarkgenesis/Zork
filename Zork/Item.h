@@ -25,6 +25,10 @@ public:
 	bool AddItemToContainer(Item* NewItem);
 	bool RemoveItemFromContainer(Item* OutItem);
 	pair<Item*, Item*> GetItemFromContainer(const string& ItemName);
+	void AutoAddItem(Item* NewItem);
+
+	bool OpenContainer();
+	bool CloseContainer();
 
 private:
 
@@ -33,5 +37,7 @@ private:
 	map<string, Item*> Container;
 
 	int Value;
+
+	bool OpenedContainer;
 };
 

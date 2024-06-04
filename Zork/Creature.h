@@ -35,6 +35,7 @@ public:
 
 	pair<Item*, Item*> GetItemFromInventory(const string& ItemName) const;
 	
+	bool AddItemToInventory(Item* OutItem);
 
 protected:
 	Room* Location;
@@ -47,7 +48,7 @@ protected:
 
 	map<string, Item*> Inventory;
 
-	bool AddItemToInventory(Item* OutItem);
+	
 	bool RemoveItemFromInventory(Item* NewItem);
 	
 	Item* EquippedWeapon;

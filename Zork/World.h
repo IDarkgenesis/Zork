@@ -23,6 +23,8 @@ enum class GameCommand
 	Unlock,
 	Equip,
 	Unequip,
+	Open,
+	Close,
 	Quit,
 	NoCommand
 };

@@ -21,5 +21,8 @@ public:
 
 	bool UnlockDoor(const string& Direction, const string& Key);
 	bool LockDoor(const string& Direction, const string& Key);
+
+	bool OpenContainer(const string& ContainerName);
+	bool CloseContainer(const string& ContainerName);
 };
 
