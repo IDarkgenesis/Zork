@@ -56,11 +56,12 @@ World::World()
 	GuardChief->AutoEquip(Sword);
 	GuardChief->AutoEquip(MetalArmor);
 
-
+	Npc* GuardianSuperior = new Npc("GuardianSuperior", "He is the second in command of this prison, he likes to figth with his bare hands", GuardRoom, true, 10, 15, 0);
 
 	AddToWorldEntities(GuardChief);
 	AddToWorldEntities(GuardDog);
 	AddToWorldEntities(Guardian);
+	AddToWorldEntities(GuardianSuperior);
 	AddToWorldEntities(Rat);
 
 	WinningRoom = Forest;

@@ -14,6 +14,8 @@ void Player::Look() const
 {
 	Entity::Look();
 
+	cout << "You currently have " + to_string(HitPoints) + " HP." << endl;
+
 	if (EquippedWeapon)
 	{
 		cout << "You have " + EquippedWeapon->GetName() + " equipped" << endl;
