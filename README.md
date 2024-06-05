@@ -51,6 +51,10 @@ In order to finish the game either the Player reaches a specific room or the pla
 
 The game Ticks whenever the Player has input a command that has been executed correctly.
 
+This is an image of the map distribution.
+
+![image info](./pictures/map.png)
+
 ### Available commands
 These are the available commands used to play the game.
 
